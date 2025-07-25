@@ -1,6 +1,7 @@
-import { ThemeProvider } from '@/components/providers/theme-provider'
+import ClerkProvider from '@/components/providers/clerk-provider'
 import './globals.css'
 
+import { ThemeProvider } from '@/components/providers/theme-provider'
 import type { Metadata } from 'next'
 import { Montserrat, Space_Grotesk } from 'next/font/google'
 
@@ -39,7 +40,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
 					disableTransitionOnChange
 					storageKey='sammi-theme'
 				>
-					{children}
+					<ClerkProvider>{children}</ClerkProvider>
 				</ThemeProvider>
 			</body>
 		</html>
