@@ -57,7 +57,7 @@ export async function POST(req: Request) {
 				username: evt.data.username!,
 				avatar: evt.data.image_url,
 				fullName: `${evt.data.first_name} ${evt.data.last_name}`,
-				bio: 'Bio is nor provided !!!',
+				bio: 'Bio is not provided !!!',
 			},
 		})
 	}
