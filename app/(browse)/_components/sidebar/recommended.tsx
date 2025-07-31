@@ -1,3 +1,5 @@
+import { getRecommended } from '@/actions/user.action'
+import UserAvatar from '@/components/shared/user-avatar'
 import {
 	SidebarContent,
 	SidebarGroup,
@@ -6,24 +8,27 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import Image from 'next/image'
+import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 
-const Recommended = () => {
+const Recommended = async () => {
+	const data = await getRecommended()
+
+	const recommended = data?.data?.recommended || []
+
 	return (
 		<SidebarGroup>
 			<SidebarGroupLabel>Recommended</SidebarGroupLabel>
 			<SidebarContent>
 				<SidebarMenu>
-					{data.map(item => (
+					{recommended.map(item => (
 						<SidebarMenuItem key={item.id}>
 							<SidebarMenuButton asChild size={'lg'}>
 								<Link href={`/u/${item.username}`}>
-									<Image
-										width={32}
-										height={32}
-										src={item.avatar}
-										alt={item.username}
+									<UserAvatar
+										avatar={item.avatar}
+										username={item.username}
+										variant={'square'}
 									/>
 									<div className='flex flex-col'>
 										<p className='text-sm font-space_grotesk'>
@@ -45,17 +50,27 @@ const Recommended = () => {
 
 export default Recommended
 
-const data = [
-	{
-		id: '1',
-		username: 'samar0811',
-		avatar: 'https://github.com/shadcn.png',
-		followedBy: 8,
-	},
-	{
-		id: '2',
-		username: 'oman',
-		avatar: 'https://github.com/shadcn.png',
-		followedBy: 23,
-	},
-]
+export const RecommendedSkeleton = () => {
+	return (
+		<SidebarGroup>
+			<SidebarGroupLabel>Following</SidebarGroupLabel>
+			<SidebarContent>
+				<SidebarMenu>
+					{Array.from({ length: 3 }).map((_, index) => (
+						<SidebarMenuItem key={index}>
+							<SidebarMenuButton asChild size={'lg'}>
+								<div className='flex items-center space-x-4'>
+									<Skeleton className='h-8 w-8' />
+									<div className='space-y-2'>
+										<Skeleton className='h-4 w-16' />
+										<Skeleton className='h-4 w-28' />
+									</div>
+								</div>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+					))}
+				</SidebarMenu>
+			</SidebarContent>
+		</SidebarGroup>
+	)
+}

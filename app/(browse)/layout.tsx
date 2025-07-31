@@ -13,7 +13,7 @@ const BrowseLayout = ({ children }: BrowseLayoutProps) => {
 
 			<main className='w-full h-full'>
 				<AppNavbar />
-				{children}
+				<div className='max-w-6xl container pt-4'>{children}</div>
 			</main>
 		</SidebarProvider>
 	)

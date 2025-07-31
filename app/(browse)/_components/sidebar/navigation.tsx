@@ -41,6 +41,6 @@ export default Navigation
 const navigation_items = [
 	{ title: 'Home', route: '/', icon: Home },
 	{ title: 'Lives', route: '/lives', icon: Layers2 },
-	{ title: 'Subscriptions', route: '/subscription', icon: TvMinimalPlay },
+	{ title: 'Subscriptions', route: '/subscriptions', icon: TvMinimalPlay },
 	{ title: 'Dashboard', route: '/dashboard', icon: Clapperboard },
 ]
