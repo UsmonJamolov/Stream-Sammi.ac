@@ -101,3 +101,17 @@ body,
 .cl-internal-df7v37 {
 	display: none !important;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+	width: 1px;
+	height: 1px;
+	border-radius: 0px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+	@apply bg-secondary;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+	@apply bg-secondary;
+}
