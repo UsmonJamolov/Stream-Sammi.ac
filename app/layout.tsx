@@ -2,6 +2,7 @@ import './globals.css'
 
 import ClerkProvider from '@/components/providers/clerk-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
+import { Toaster } from '@/components/ui/toaster'
 import type { Metadata } from 'next'
 import { Montserrat, Space_Grotesk } from 'next/font/google'
 import NextTopLoader from 'nextjs-toploader'
@@ -42,6 +43,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
 					storageKey='sammi-theme'
 				>
 					<ClerkProvider>
+						<Toaster />
 						<NextTopLoader showSpinner={false} />
 						{children}
 					</ClerkProvider>

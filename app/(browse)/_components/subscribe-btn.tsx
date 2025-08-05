@@ -9,7 +9,7 @@ const SubscribeBtn = ({ isFollowing }: SubscribeBtnProps) => {
 		<Button
 			variant={isFollowing ? 'secondary' : 'default'}
 			size={'lg'}
-			className='rounded-full mt-4'
+			className='rounded-full'
 		>
 			{isFollowing ? 'Unsubscribe' : 'Subscribe'}
 		</Button>
