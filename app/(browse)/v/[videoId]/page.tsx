@@ -4,12 +4,12 @@ import VideoActions from '../_components/video-actions'
 import Comments from '../_components/comments'
 import RecommendedVideos from '../_components/recommended-videos'
 
-interface VideoPageProps {
-	params: Promise<{ videoId: string }>
-}
+// interface VideoPageProps {
+// 	params: Promise<{ videoId: string }>
+// }
 
-const VideoPage = async ({ params }: VideoPageProps) => {
-	const { videoId } = await params
+const VideoPage = () => {
+	// const { videoId } = await params
 
 	return (
 		<div className='grid grid-cols-4 gap-x-4'>
