@@ -1,9 +1,10 @@
 import { getHomeFeed } from '@/actions/feed.action'
+import { Skeleton } from '@/components/ui/skeleton'
 import { ChartNoAxesColumnIncreasing, Heart, MessageSquare } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-const RecommendedVideos = async () => {
+export const RecommendedVideos = async () => {
 	const response = await getHomeFeed()
 
 	const feed = response?.data?.feed || []
@@ -56,4 +57,28 @@ const RecommendedVideos = async () => {
 	)
 }
 
-export default RecommendedVideos
+export const RecommendedVideosSkeleton = () => {
+	return (
+		<>
+			<h2 className='font-space_grotesk text-2xl'>Recommended</h2>
+
+			{Array.from({ length: 3 }).map((_, index) => (
+				<div key={index} className='flex flex-col space-y-2 mt-4'>
+					<div className='flex gap-x-2'>
+						<Skeleton className='rounded-md w-[96px] h-[54px]' />
+
+						<div className='flex flex-col space-y-0 flex-1 h-full w-full'>
+							<Skeleton className='w-full h-4' />
+
+							<div className='flex gap-x-4 pt-2'>
+								<Skeleton className='w-1/3 h-4' />
+								<Skeleton className='w-1/3 h-4' />
+								<Skeleton className='w-1/3 h-4' />
+							</div>
+						</div>
+					</div>
+				</div>
+			))}
+		</>
+	)
+}
