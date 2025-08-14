@@ -11,11 +11,7 @@ interface SocialMediaCardProps {
 	icon: LucideIcon
 }
 
-const SocialMediaCard = ({
-	icon: Icon,
-	socialMedia,
-	value,
-}: SocialMediaCardProps) => {
+const SocialMediaCard = ({ icon: Icon, value }: SocialMediaCardProps) => {
 	const [val, setValue] = useState(value)
 
 	const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {

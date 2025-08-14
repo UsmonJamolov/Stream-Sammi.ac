@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { columns, DatatType } from '../_components/columns'
+import { columns } from '../_components/columns'
 import { DataTable } from '../_components/data-table'
 import { Separator } from '@/components/ui/separator'
 import { getHomeFeed } from '@/actions/feed.action'
