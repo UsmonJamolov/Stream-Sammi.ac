@@ -26,16 +26,18 @@ import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 
 interface DataTableProps<TData, TValue> {
-	columns: ColumnDef<TData, TValue>[]
 	data: TData[]
+	columns: ColumnDef<TData, TValue>[]
 }
 
 export function DataTable<TData, TValue>({
-	columns,
 	data,
+	columns,
 }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
+	console.log(data)
 
 	const table = useReactTable({
 		data,
