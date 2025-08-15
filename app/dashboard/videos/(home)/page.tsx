@@ -34,7 +34,7 @@ const Page = async () => {
 				<Button size={'sm'}>Upload Video</Button>
 			</div>
 			<Separator className='my-3' />
-			{/* @ts-expect-error */}
+			{/* @ts-expect-error as @ts-ignore */}
 			<DataTable columns={columns} data={formattedData} />
 		</>
 	)
