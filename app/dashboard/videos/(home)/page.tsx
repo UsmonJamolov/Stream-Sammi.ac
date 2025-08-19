@@ -3,6 +3,7 @@ import { columns } from '../_components/columns'
 import { DataTable } from '../_components/data-table'
 import { Separator } from '@/components/ui/separator'
 import { getHomeFeed } from '@/actions/feed.action'
+import UploadVideo from '@/components/shared/upload-video'
 
 const Page = async () => {
 	const data = await getHomeFeed()
@@ -31,7 +32,7 @@ const Page = async () => {
 						videos here.
 					</p>
 				</div>
-				<Button size={'sm'}>Upload Video</Button>
+				<UploadVideo />
 			</div>
 			<Separator className='my-3' />
 			{/* @ts-expect-error as @ts-ignore */}

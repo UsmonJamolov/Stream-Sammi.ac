@@ -1,7 +1,10 @@
 'use server'
 
+import { db } from '@/lib/db'
 import { actionClient } from '@/lib/safe-action'
 import { usernameSchema } from '@/lib/validation'
+import { currentUser } from '@clerk/nextjs/server'
+import { redirect } from 'next/navigation'
 
 export const getRecommended = actionClient.action(async () => {
 	await new Promise(resolve => setTimeout(resolve, 1000))
@@ -21,6 +24,18 @@ export const getUserByUsername = actionClient
 		const user = data.find(user => user.username === username)
 		return { user }
 	})
+
+export const getAuthorizedUser = actionClient.action(async () => {
+	const user = await currentUser()
+	if (!user) return redirect('/sign-in')
+
+	// const foundedUser = db.user.findUnique({
+	// 	where: { clerkId: user.id },
+	// })
+	if (!user) return redirect('/sign-in')
+
+	return { user: user }
+})
 
 const data = [
 	{

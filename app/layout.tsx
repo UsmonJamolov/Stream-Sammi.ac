@@ -1,11 +1,14 @@
 import './globals.css'
 
+import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin'
+import { extractRouterConfig } from 'uploadthing/server'
 import ClerkProvider from '@/components/providers/clerk-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
-import { Toaster } from '@/components/ui/toaster'
+import { Toaster } from '@/components/ui/sonner'
 import type { Metadata } from 'next'
 import { Montserrat, Space_Grotesk } from 'next/font/google'
 import NextTopLoader from 'nextjs-toploader'
+import { ourFileRouter } from './api/uploadthing/core'
 
 const montserrat = Montserrat({
 	variable: '--font-montserrat',
@@ -45,6 +48,15 @@ const RootLayout = ({ children }: RootLayoutProps) => {
 					<ClerkProvider>
 						<Toaster />
 						<NextTopLoader showSpinner={false} />
+						<NextSSRPlugin
+							/**
+							 * The `extractRouterConfig` will extract **only** the route configs
+							 * from the router to prevent additional information from being
+							 * leaked to the client. The data passed to the client is the same
+							 * as if you were to fetch `/api/uploadthing` directly.
+							 */
+							routerConfig={extractRouterConfig(ourFileRouter)}
+						/>
 						{children}
 					</ClerkProvider>
 				</ThemeProvider>

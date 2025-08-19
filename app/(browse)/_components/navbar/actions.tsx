@@ -1,4 +1,5 @@
 import { ModeToggle } from '@/components/shared/mode-toggle'
+import UploadVideo from '@/components/shared/upload-video'
 import { Button } from '@/components/ui/button'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
@@ -7,6 +8,7 @@ import { LogIn } from 'lucide-react'
 const Actions = () => {
 	return (
 		<div className='flex items-center justify-end gap-x-2'>
+			<UploadVideo isGlobal />
 			<ModeToggle />
 			<SidebarTrigger />
 			<SignedOut>
