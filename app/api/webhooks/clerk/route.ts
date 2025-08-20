@@ -1,6 +1,6 @@
 import { verifyWebhook } from '@clerk/nextjs/webhooks'
 import { NextRequest } from 'next/server'
-import { db } from '@/lib/db'
+// import { db } from '@/lib/db'
 
 // export async function POST(req: NextRequest) {
 // 	try {
