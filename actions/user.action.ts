@@ -32,7 +32,7 @@ export const getAuthorizedUser = actionClient.action(async () => {
 	const foundedUser = db.user.findUnique({
 		where: { clerkId: user.id },
 	})
-	if (!user) return redirect('/sign-in')
+	if (!foundedUser) return redirect('/sign-in')
 
 	return { user: foundedUser }
 })
