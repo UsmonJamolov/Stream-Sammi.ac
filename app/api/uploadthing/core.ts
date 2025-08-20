@@ -15,16 +15,14 @@ export const ourFileRouter = {
 	})
 		.middleware(async () => {
 			const response = await getAuthorizedUser()
+			console.log(response)
+
 			const user = await response?.data?.user
+			console.log(user)
+
 			if (!user) throw new UploadThingError('Unauthorized')
 			return { userId: user.id }
 		})
-		// .middleware(async () => {
-		// 	const response = await getAuthorizedUser()
-		// 	const user = await response?.data?.user
-		// 	if (!user) throw new UploadThingError('Unauthorized')
-		// 	return { userId: user.id }
-		// })
 		.onUploadComplete(async ({ file, metadata }) => {
 			return { url: file.ufsUrl, userId: metadata.userId }
 		}),

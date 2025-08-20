@@ -29,12 +29,12 @@ export const getAuthorizedUser = actionClient.action(async () => {
 	const user = await currentUser()
 	if (!user) return redirect('/sign-in')
 
-	// const foundedUser = db.user.findUnique({
-	// 	where: { clerkId: user.id },
-	// })
+	const foundedUser = db.user.findUnique({
+		where: { clerkId: user.id },
+	})
 	if (!user) return redirect('/sign-in')
 
-	return { user: user }
+	return { user: foundedUser }
 })
 
 const data = [

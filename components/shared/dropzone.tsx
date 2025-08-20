@@ -1,5 +1,3 @@
-'use client'
-
 import { UploadDropzone } from '@/lib/uploadthing'
 import { useUploadVideo } from '@/store/use-upload-video'
 import { useState } from 'react'
