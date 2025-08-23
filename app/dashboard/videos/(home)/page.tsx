@@ -2,7 +2,7 @@ import { columns } from '../_components/columns'
 import { DataTable } from '../_components/data-table'
 import { Separator } from '@/components/ui/separator'
 import { getHomeFeed } from '@/actions/feed.action'
-import UploadVideo from '@/components/shared/upload-video'
+import UploadVideo from '@/components/video-upload'
 
 const Page = async () => {
 	const data = await getHomeFeed()

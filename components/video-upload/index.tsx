@@ -13,6 +13,8 @@ import { BadgePlus } from 'lucide-react'
 import { Progress } from '../ui/progress'
 import { useUploadVideo } from '@/store/use-upload-video'
 import Dropzone from './dropzone'
+import Information from './information'
+import Thumbnail from './thumbnail'
 
 interface UploadVideoProps {
 	isGlobal?: boolean
@@ -34,7 +36,7 @@ const UploadVideo = ({ isGlobal = false }: UploadVideoProps) => {
 					{!isGlobal && <Button size={'sm'}>Upload Video</Button>}
 				</div>
 			</DialogTrigger>
-			<DialogContent>
+			<DialogContent className='max-w-2xl'>
 				<DialogHeader>
 					<DialogTitle>Upload video</DialogTitle>
 					<DialogDescription>
@@ -47,7 +49,8 @@ const UploadVideo = ({ isGlobal = false }: UploadVideoProps) => {
 					{step}/3 step
 				</div>
 				{step === 1 && <Dropzone />}
-				{step === 2 && <p>Step 2</p>}
+				{step === 2 && <Information />}
+				{step === 3 && <Thumbnail />}
 			</DialogContent>
 		</Dialog>
 	)

@@ -1,5 +1,5 @@
 import { ModeToggle } from '@/components/shared/mode-toggle'
-import UploadVideo from '@/components/shared/upload-video'
+import UploadVideo from '@/components/video-upload'
 import { Button } from '@/components/ui/button'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'

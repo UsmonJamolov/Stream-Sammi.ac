@@ -5,18 +5,20 @@ import { toast } from 'sonner'
 
 const Dropzone = () => {
 	const [toastId, setToastId] = useState<string | null>(null)
-	const { setStep, setProgress } = useUploadVideo()
+	const { setStep, setProgress, setLoadingProgress, setVideoId } =
+		useUploadVideo()
 
 	return (
 		<UploadDropzone
 			endpoint={'videoUploader'}
 			onClientUploadComplete={res => {
-				console.log('res', res)
+				setVideoId(res[0].serverData.videoId)
 				toast.success('Video uploaded successfully!', {
 					id: 'uploading-video',
 				})
 			}}
 			onUploadProgress={progress => {
+				setLoadingProgress(progress)
 				if (!toastId) {
 					const id = toast.loading(`Uploading video ${progress.toFixed(0)}%`, {
 						id: 'uploading-video',
@@ -28,7 +30,7 @@ const Dropzone = () => {
 			}}
 			onUploadBegin={() => {
 				setStep(2)
-				setProgress(33)
+				setProgress(66)
 			}}
 			uploadProgressGranularity='all'
 			config={{ mode: 'auto', appendOnPaste: true }}
