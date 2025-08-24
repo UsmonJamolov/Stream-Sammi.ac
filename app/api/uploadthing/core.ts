@@ -1,30 +1,22 @@
 import { getAuthorizedUser } from '@/actions/user.action'
+import { db } from '@/lib/db'
 import { createUploadthing, type FileRouter } from 'uploadthing/next'
 import { UploadThingError } from 'uploadthing/server'
-import { db } from '@/lib/db'
 
 const f = createUploadthing()
 
-console.log(f)
-
 export const ourFileRouter = {
 	imageUploader: f({
-		image: {
-			maxFileSize: '4MB',
-			maxFileCount: 1,
-		},
+		image: { maxFileSize: '4MB', maxFileCount: 1 },
 	})
 		.middleware(async () => {
 			const response = await getAuthorizedUser()
-			console.log(response)
-
 			const user = await response?.data?.user
-
 			if (!user) throw new UploadThingError('Unauthorized')
 			return { userId: user.id }
 		})
-		.onUploadComplete(async ({ file, metadata }) => {
-			return { url: file.ufsUrl, userId: metadata.userId }
+		.onUploadComplete(async ({ file }) => {
+			return { url: file.name }
 		}),
 
 	videoUploader: f({
@@ -33,7 +25,6 @@ export const ourFileRouter = {
 		.middleware(async () => {
 			const response = await getAuthorizedUser()
 			const user = await response?.data?.user
-
 			if (!user) throw new UploadThingError('Unauthorized')
 			return { userId: user.id }
 		})

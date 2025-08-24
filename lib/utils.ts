@@ -1,12 +1,11 @@
 import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
 import { toast } from 'sonner'
+import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
 
-// @ts-expect-error as @ts-ignore
 export function showToastError(response: any) {
 	if (response?.serverError || response?.validationErrors || !response?.data) {
 		return toast.error('Failed to update video')

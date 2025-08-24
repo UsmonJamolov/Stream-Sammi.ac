@@ -26,14 +26,14 @@ export const updateVideo = actionClient
 
 const data = [
 	{
-		id: 1,
+		id: '1',
 		createdAt: new Date('2025-02-01T12:00:00Z'),
 		content: 'Hello world',
 		user: {
-			id: 1,
-			username: 'usman',
+			id: '1',
+			username: 'samar',
 			avatar: 'https://github.com/shadcn.png',
-			followeBy: 8,
+			followedBy: 8,
 		},
 	},
 	{

@@ -1,7 +1,7 @@
 import { ModeToggle } from '@/components/shared/mode-toggle'
-import UploadVideo from '@/components/video-upload'
 import { Button } from '@/components/ui/button'
 import { SidebarTrigger } from '@/components/ui/sidebar'
+import UploadVideo from '@/components/video-upload'
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
 import { LogIn } from 'lucide-react'
 
