@@ -6,7 +6,6 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
 
-// @typescript-eslint/no-explicit-any
 export function showToastError(response: any) {
 	if (response?.serverError || response?.validationErrors || !response?.data) {
 		return toast.error('Failed to update video')
