@@ -43,14 +43,13 @@ export const ourFileRouter = {
 					userId: metadata.userId,
 					title: file.name,
 					description: 'Description goes here',
-					thumbnail: 'https://fakeimg.pl/600x400?text=thumbnail',
+					thumbnail:
+						'https://fakeimg.deblan.org/600x400/000/fff.jpg&text=thumbnail',
 					videoUrl: file.ufsUrl,
 				},
 			})
 
 			return { url: file.name, videoId: newVideo.id }
-
-			// return { url: file.ufsUrl, userId: metadata.userId }
 		}),
 } satisfies FileRouter
 

@@ -17,7 +17,9 @@ export const UserContent = async () => {
 			<div className='flex gap-x-4 mt-6 w-2/3 items-start'>
 				<div className='w-72 h-44 rounded-xl relative'>
 					<Image
-						src={'https://fakeimg.pl/600x400?text=Samar0811'}
+						src={
+							'https://fakeimg.deblan.org/600x400/000/fff.jpg&text=thumbnail'
+						}
 						alt='samar0811'
 						fill
 						className='rounded-xl object-cover'
