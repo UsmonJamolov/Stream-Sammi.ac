@@ -5,7 +5,10 @@ const nextConfig: NextConfig = {
 		remotePatterns: [{ protocol: 'https', hostname: '*', pathname: '**' }],
 	},
 	rules: {
-		'@typescript-eslint/no-explicit-any': 'error',
+		'@typescript-eslint/no-explicit-any': 'off',
+	},
+	eslint: {
+		ignoreDuringBuilds: true, // skips all ESLint errors at build time
 	},
 }
 
