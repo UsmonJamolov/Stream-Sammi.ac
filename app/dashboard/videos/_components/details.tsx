@@ -1,10 +1,10 @@
 import { Video } from '@prisma/client'
 
-interface DetailsProps {
-	video: Video
-}
+// interface DetailsProps {
+// 	video: Video
+// }
 
-const Details = ({ video }: DetailsProps) => {
+const Details = () => {
 	return <div>Details</div>
 }
 

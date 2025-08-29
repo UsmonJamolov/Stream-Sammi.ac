@@ -25,8 +25,8 @@ const Page = async ({ params }: PageProps) => {
 			<Separator className='my-3' />
 
 			<div className='grid grid-cols-2 gap-x-8'>
-				<Details video={video} />
-				<VideoDetail video={video} />
+				<Details />
+				<VideoDetail />
 			</div>
 		</>
 	)
