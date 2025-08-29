@@ -12,6 +12,7 @@ import {
 	MessageSquare,
 } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export type DatatType = {
 	id: string
@@ -39,24 +40,29 @@ export const columns: ColumnDef<DatatType>[] = [
 			</Button>
 		),
 		cell: ({ row }) => (
-			<div className='flex gap-x-2'>
-				<Image
-					width={96}
-					height={48}
-					src={row.original.thumbnail}
-					alt={row.original.title}
-					className='object-cover rounded-md'
-				/>
+			<Link
+				className='flex gap-x-2'
+				href={`/dashboard/videos/${row.original.id}`}
+			>
+				<div className='relative w-24 h-12'>
+					<Image
+						src={row.original.thumbnail}
+						alt={row.original.title}
+						className='object-cover rounded-md'
+						fill
+					/>
+				</div>
 
 				<div className='flex flex-col space-y-0 flex-1 h-full'>
 					<p className='line-clamp-1 font-space_grotesk font-semibold'>
 						{row.original.title}
 					</p>
-					<p className='line-clamp-2 text-xs text-muted-foreground'>
-						{row.original.description}
-					</p>
+					<div
+						className='line-clamp-2 text-xs text-muted-foreground'
+						dangerouslySetInnerHTML={{ __html: row.original.description }}
+					/>
 				</div>
-			</div>
+			</Link>
 		),
 	},
 	{

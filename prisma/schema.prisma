@@ -32,6 +32,9 @@ model Video {
   category    String @default("General") @db.Text
   visibility  String @default("Private") @db.Text
 
+  videoUrlKey  String @unique
+  thumbnailKey String @default("") @db.Text
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

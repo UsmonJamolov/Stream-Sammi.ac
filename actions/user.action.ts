@@ -25,17 +25,17 @@ export const getUserByUsername = actionClient
 		return { user }
 	})
 
-export const getAuthorizedUser = actionClient.action(async () => {
+export const getAuthorizedUser = async () => {
 	const user = await currentUser()
 	if (!user) return redirect('/sign-in')
 
-	const foundedUser = db.user.findUnique({
+	const foundedUser = await db.user.findUnique({
 		where: { clerkId: user.id },
 	})
 	if (!foundedUser) return redirect('/sign-in')
 
 	return { user: foundedUser }
-})
+}
 
 const data = [
 	{

@@ -10,8 +10,7 @@ export const ourFileRouter = {
 		image: { maxFileSize: '4MB', maxFileCount: 1 },
 	})
 		.middleware(async () => {
-			const response = await getAuthorizedUser()
-			const user = await response?.data?.user
+			const { user } = await getAuthorizedUser()
 			if (!user) throw new UploadThingError('Unauthorized')
 			return { userId: user.id }
 		})
@@ -23,8 +22,7 @@ export const ourFileRouter = {
 		video: { maxFileSize: '128MB', maxFileCount: 1 },
 	})
 		.middleware(async () => {
-			const response = await getAuthorizedUser()
-			const user = await response?.data?.user
+			const { user } = await getAuthorizedUser()
 			if (!user) throw new UploadThingError('Unauthorized')
 			return { userId: user.id }
 		})
@@ -34,9 +32,9 @@ export const ourFileRouter = {
 					userId: metadata.userId,
 					title: file.name,
 					description: 'Description goes here',
-					thumbnail:
-						'https://fakeimg.deblan.org/600x400/000/fff.jpg&text=thumbnail',
+					thumbnail: 'https://fakeimg.pl/600x400?text=thumbnail',
 					videoUrl: file.ufsUrl,
+					videoUrlKey: file.key,
 				},
 			})
 

@@ -22,10 +22,10 @@ import {
 } from '../ui/select'
 import { useUploadVideo } from '@/store/use-upload-video'
 import { useTransition } from 'react'
-import { updateVideo } from '@/actions/video.action'
 import Spinner from '../shared/spinner'
 import { toast } from 'sonner'
 import { showToastError } from '@/lib/utils'
+import { updateVideo } from '@/actions/dashboard.action'
 
 const formSchema = z.object({
 	title: z.string().nonempty(),

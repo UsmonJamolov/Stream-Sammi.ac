@@ -10,4 +10,9 @@ export const updateVideoSchema = z.object({
 	description: z.string().optional(),
 	category: z.string().optional(),
 	thumbnail: z.string().optional(),
+	thumbnailKey: z.string().optional(),
+})
+
+export const idSchema = z.object({
+	id: z.string(),
 })
