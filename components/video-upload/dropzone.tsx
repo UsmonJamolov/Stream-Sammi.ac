@@ -1,5 +1,6 @@
 import { UploadDropzone } from '@/lib/uploadthing'
 import { useUploadVideo } from '@/store/use-upload-video'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -7,6 +8,8 @@ const Dropzone = () => {
 	const [toastId, setToastId] = useState<string | null>(null)
 	const { setStep, setProgress, setLoadingProgress, setVideoId } =
 		useUploadVideo()
+
+	const router = useRouter()
 
 	return (
 		<UploadDropzone
@@ -27,6 +30,7 @@ const Dropzone = () => {
 				} else {
 					toast.loading(toastId, { id: 'uploading-video' })
 				}
+				router.refresh()
 			}}
 			onUploadBegin={() => {
 				setStep(2)

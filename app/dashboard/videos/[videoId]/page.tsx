@@ -24,9 +24,9 @@ const Page = async ({ params }: PageProps) => {
 			<Actions video={video} />
 			<Separator className='my-3' />
 
-			<div className='grid grid-cols-2 gap-x-8'>
-				<Details />
-				<VideoDetail />
+			<div className='grid grid-cols-3 gap-x-8'>
+				<Details video={video} />
+				<VideoDetail video={video} />
 			</div>
 		</>
 	)

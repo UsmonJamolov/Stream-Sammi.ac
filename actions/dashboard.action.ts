@@ -41,16 +41,16 @@ export const getVideoById = actionClient
 export const updateVideo = actionClient
 	.schema(updateVideoSchema)
 	.action(async ({ parsedInput }) => {
-		const { videoId, category, description, title, thumbnail, thumbnailKey } =
-			parsedInput
+		const { videoId, ...paylaod } = parsedInput
 		if (!videoId) return { failure: 'Video ID is required' }
 
 		const updatedVideo = await db.video.update({
 			where: { id: videoId },
-			data: { category, description, title, thumbnail, thumbnailKey },
+			data: paylaod,
 		})
 		if (!updatedVideo) return { failure: 'Video not found' }
 
+		revalidatePath('/dashboard/videos')
 		return { success: updatedVideo.id }
 	})
 
