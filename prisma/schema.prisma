@@ -20,7 +20,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  videos Video[]
+  videos    Video[]
+  reactions VideoReaction[]
+  comments  Comment[]
+
+  following  Follow[] @relation(name: "Following")
+  followedBy Follow[] @relation(name: "FollowedBy")
 }
 
 model Video {
@@ -40,4 +45,60 @@ model Video {
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  views    Int @default(0)
+  likes    Int @default(0)
+  dislikes Int @default(0)
+
+  reactions VideoReaction[]
+  comments  Comment[]
+}
+
+model VideoReaction {
+  id String @id @default(cuid())
+
+  videoId String
+  userId  String
+
+  reaction String
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([videoId, userId])
+}
+
+model Comment {
+  id      String @id @default(cuid())
+  content String @db.Text
+
+  videoId String
+  userId  String
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([videoId, userId])
+}
+
+model Follow {
+  id          String @id @default(cuid())
+  followerId  String
+  followingId String
+
+  follower  User @relation(fields: [followerId], references: [id], onDelete: Cascade, name: "Following")
+  following User @relation(fields: [followingId], references: [id], onDelete: Cascade, name: "FollowedBy")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([followerId, followingId])
+  @@unique([followingId])
+  @@unique([followerId])
 }

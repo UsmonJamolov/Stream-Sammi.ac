@@ -157,6 +157,7 @@ const VideoDetail = ({ video }: VideoDetailProps) => {
 						<SelectValue placeholder='Select a video category' />
 					</SelectTrigger>
 					<SelectContent>
+						<SelectItem value='General'>General</SelectItem>
 						<SelectItem value='IT'>IT</SelectItem>
 						<SelectItem value='Sport'>Sport</SelectItem>
 						<SelectItem value='Comedy'>Comedy</SelectItem>

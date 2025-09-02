@@ -1,6 +1,33 @@
 'use server'
 
+import { db } from '@/lib/db'
 import { actionClient } from '@/lib/safe-action'
+import { idSchema } from '@/lib/validation'
+
+export const getVideoByID = actionClient
+	.schema(idSchema)
+	.action(async ({ parsedInput }) => {
+		const { id } = parsedInput
+		if (!id) return { failure: 'Invalid ID' }
+
+		const video = await db.video.findUnique({
+			where: { id },
+			omit: {
+				updatedAt: true,
+				thumbnailKey: true,
+				videoUrlKey: true,
+				userId: true,
+			},
+			include: {
+				user: {
+					select: { id: true, username: true, fullName: true, avatar: true },
+				},
+			},
+		})
+		if (!video) return { failure: 'Video not found' }
+
+		return { video }
+	})
 
 export const getComments = actionClient.action(async () => {
 	await new Promise(resolve => setTimeout(resolve, 1000))

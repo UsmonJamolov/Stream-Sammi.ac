@@ -7,30 +7,45 @@ import {
 	RecommendedVideosSkeleton,
 } from '../_components/recommended-videos'
 import { Suspense } from 'react'
+import { getVideoByID } from '@/actions/video.action'
+import { notFound } from 'next/navigation'
+import VideoPlayer from '../_components/video-player'
 
-// interface VideoPageProps {
-// 	params: Promise<{ videoId: string }>
-// }
+interface VideoPageProps {
+	params: Promise<{ videoId: string }>
+}
 
-const VideoPage = () => {
-	// const { videoId } = await params
+const VideoPage = async ({ params }: VideoPageProps) => {
+	const { videoId } = await params
+	const response = await getVideoByID({ id: videoId })
+	if (response?.data?.failure) return notFound()
+
+	const video = response?.data?.video
+
+	console.log(video)
+
+	if (!video) return null
 
 	return (
 		<>
 			<div className='grid grid-cols-4 gap-x-4 mt-4'>
 				<div className='col-span-3'>
-					<div className='aspect-video bg-secondary rounded-md' />
+					<VideoPlayer videoUrl={video.videoUrl} />
 					<h1 className='text-2xl font-bold mt-4 font-space_grotesk'>
-						How to build a website with Next.js and Tailwind CSS - Full Course
+						{video.title}
 					</h1>
 
 					<div className='flex items-center justify-between mt-3'>
-						<UserInformation />
+						<UserInformation video={JSON.parse(JSON.stringify(video))} />
 
 						<VideoActions reaction={'LIKE'} />
 					</div>
 
-					<Description />
+					<Description
+						views={12}
+						createdAt={video.createdAt}
+						description={video.description}
+					/>
 					<Suspense fallback={<CommentsSkeleton />}>
 						<Comments />
 					</Suspense>

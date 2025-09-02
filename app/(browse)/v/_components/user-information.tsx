@@ -3,20 +3,27 @@ import { Button } from '@/components/ui/button'
 import { BadgeCheck } from 'lucide-react'
 import Link from 'next/link'
 import SubscribeBtn from '../../_components/subscribe-btn'
+import { User, Video } from '@prisma/client'
 
-const UserInformation = () => {
+interface UserInformationProps {
+	video: Video & {
+		user: User
+	}
+}
+
+const UserInformation = ({ video }: UserInformationProps) => {
 	return (
 		<Link href={'/u/samarbadriddin0v'} className='flex items-center gap-x-2'>
 			<UserAvatar
-				avatar='https://avatars.githubusercontent.com/u/77552507?v=4'
-				username='samarbadriddin0v'
+				avatar={video.user.avatar}
+				username={video.user.username}
 				size={'lg'}
 			/>
 
 			<div className='flex flex-col space-y-0'>
 				<div className='flex itemsce gap-x-1'>
 					<h2 className='font-bold text-lg font-space_grotesk'>
-						Samar Badriddinov
+						{video.user.fullName}
 					</h2>
 					<Button
 						variant={'ghost'}

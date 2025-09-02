@@ -7,20 +7,19 @@ import { showToastError } from '@/lib/utils'
 import { Video } from '@prisma/client'
 import { Editor } from '@tinymce/tinymce-react'
 import { useTheme } from 'next-themes'
-import { useEffect, useState, useTransition } from 'react'
+import { useTransition } from 'react'
 import { toast } from 'sonner'
 import { debounce } from 'lodash'
+import { useIsClient } from 'usehooks-ts'
 
 interface DetailsProps {
 	video: Video
 }
 
 const Details = ({ video }: DetailsProps) => {
-	const [mount, setMount] = useState(false)
 	const { resolvedTheme } = useTheme()
 	const [isLoading, startTransition] = useTransition()
-
-	useEffect(() => setMount(true), [])
+	const isClient = useIsClient()
 
 	const onUpdate = (title: string, description: string) => {
 		startTransition(async () => {
@@ -51,7 +50,7 @@ const Details = ({ video }: DetailsProps) => {
 
 			<div className='w-full'>
 				<Label className='font-space_grotesk'>Description</Label>
-				{mount && (
+				{isClient && (
 					<Editor
 						apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
 						onEditorChange={content => deboundedUpdate(video.title, content)}
