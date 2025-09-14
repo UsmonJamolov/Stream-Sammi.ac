@@ -1,13 +1,13 @@
-import { getHomeFeed } from '@/actions/feed.action'
 import Image from 'next/image'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import UserAvatar from '@/components/shared/user-avatar'
+import { getPublicVideos } from '@/actions/video.action'
 
 const HomePage = async () => {
-	const response = await getHomeFeed()
+	const response = await getPublicVideos()
 
-	const feeds = response?.data?.feed || []
+	const feeds = response?.data?.videos || []
 
 	return (
 		<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4'>

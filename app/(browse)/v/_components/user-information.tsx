@@ -4,16 +4,20 @@ import { BadgeCheck } from 'lucide-react'
 import Link from 'next/link'
 import SubscribeBtn from '../../_components/subscribe-btn'
 import { User, Video } from '@prisma/client'
+import { getUser, isFollowingUser } from '@/actions/user.action'
 
 interface UserInformationProps {
 	video: Video & {
-		user: User
+		user: User & { _count: { followedBy: number } }
 	}
 }
 
-const UserInformation = ({ video }: UserInformationProps) => {
+const UserInformation = async ({ video }: UserInformationProps) => {
+	const { user } = await getUser()
+	const { isFollowing } = await isFollowingUser(video.user.id)
+
 	return (
-		<Link href={'/u/samarbadriddin0v'} className='flex items-center gap-x-2'>
+		<div className='flex items-center gap-x-2'>
 			<UserAvatar
 				avatar={video.user.avatar}
 				username={video.user.username}
@@ -33,10 +37,18 @@ const UserInformation = ({ video }: UserInformationProps) => {
 						<BadgeCheck className='text-blue-500' />
 					</Button>
 				</div>
-				<p className='text-sm text-muted-foreground'>23 subscribers</p>
+				<p className='text-sm text-muted-foreground'>
+					{video.user._count.followedBy} subscribers
+				</p>
 			</div>
-			<SubscribeBtn isFollowing />
-		</Link>
+			{video.user.id === user?.id ? (
+				<Button asChild size={'lg'} className='rounded-full'>
+					<Link href={`/u/${user.username}`}>Edit</Link>
+				</Button>
+			) : (
+				<SubscribeBtn isFollowing={isFollowing} otherUserId={video.user.id} />
+			)}
+		</div>
 	)
 }
 

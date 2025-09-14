@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function showToastError(response: any) {
 	if (response?.serverError || response?.validationErrors || !response?.data) {
-		return toast.error('Failed to update video')
+		return toast.error('Something went wrong')
 	}
 	if (response.data.failure) {
 		return toast.error(response.data.failure)

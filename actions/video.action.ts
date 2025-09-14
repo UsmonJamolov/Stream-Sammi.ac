@@ -4,6 +4,21 @@ import { db } from '@/lib/db'
 import { actionClient } from '@/lib/safe-action'
 import { idSchema } from '@/lib/validation'
 
+export const getPublicVideos = actionClient.action(async () => {
+	const videos = await db.video.findMany({
+		orderBy: { createdAt: 'desc' },
+		select: {
+			id: true,
+			title: true,
+			thumbnail: true,
+			createdAt: true,
+			user: { select: { id: true, username: true, avatar: true } },
+		},
+	})
+
+	return { videos }
+})
+
 export const getVideoByID = actionClient
 	.schema(idSchema)
 	.action(async ({ parsedInput }) => {
@@ -20,7 +35,13 @@ export const getVideoByID = actionClient
 			},
 			include: {
 				user: {
-					select: { id: true, username: true, fullName: true, avatar: true },
+					select: {
+						id: true,
+						username: true,
+						fullName: true,
+						avatar: true,
+						_count: { select: { followedBy: true, videos: true } },
+					},
 				},
 			},
 		})

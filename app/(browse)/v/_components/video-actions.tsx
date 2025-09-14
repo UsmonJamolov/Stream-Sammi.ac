@@ -10,7 +10,6 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
-import { toast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
 import { Download, Share2, ThumbsDown, ThumbsUp } from 'lucide-react'
 import {
@@ -25,12 +24,14 @@ import {
 	VKIcon,
 	VKShareButton,
 } from 'react-share'
+import { toast } from 'sonner'
 
 interface VideoActionsProps {
 	reaction: 'LIKE' | 'DISLIKE' | null
+	videoId: string
 }
 
-const VideoActions = ({ reaction }: VideoActionsProps) => {
+const VideoActions = ({ reaction, videoId }: VideoActionsProps) => {
 	return (
 		<div className='flex items-center gap-x-2'>
 			<div className='rounded-full flex items-center'>
@@ -76,29 +77,31 @@ const VideoActions = ({ reaction }: VideoActionsProps) => {
 
 					<div className='flex items-center gap-x-2 justify-center'>
 						<TelegramShareButton
-							url={`${process.env.NEXT_PUBLIC_DOMAIN_URL}/v/1`}
+							url={`${process.env.NEXT_PUBLIC_DOMAIN_URL}/v/${videoId}`}
 						>
 							<TelegramIcon round />
 						</TelegramShareButton>
 
 						<FacebookShareButton
-							url={`${process.env.NEXT_PUBLIC_DOMAIN_URL}/v/1`}
+							url={`${process.env.NEXT_PUBLIC_DOMAIN_URL}/v/${videoId}`}
 						>
 							<FacebookIcon round />
 						</FacebookShareButton>
 
 						<LinkedinShareButton
-							url={`${process.env.NEXT_PUBLIC_DOMAIN_URL}/v/1`}
+							url={`${process.env.NEXT_PUBLIC_DOMAIN_URL}/v/${videoId}`}
 						>
 							<LinkedinIcon round />
 						</LinkedinShareButton>
 
-						<VKShareButton url={`${process.env.NEXT_PUBLIC_DOMAIN_URL}/v/1`}>
+						<VKShareButton
+							url={`${process.env.NEXT_PUBLIC_DOMAIN_URL}/v/${videoId}`}
+						>
 							<VKIcon round />
 						</VKShareButton>
 
 						<TwitterShareButton
-							url={`${process.env.NEXT_PUBLIC_DOMAIN_URL}/v/1`}
+							url={`${process.env.NEXT_PUBLIC_DOMAIN_URL}/v/${videoId}`}
 						>
 							<TwitterIcon round />
 						</TwitterShareButton>
@@ -106,16 +109,16 @@ const VideoActions = ({ reaction }: VideoActionsProps) => {
 
 					<div className='flex items-center justify-between bg-secondary p-2 border rounded-full gap-x-4 mt-4'>
 						<div className='flex-1 line-clamp-1 text-sm'>
-							{process.env.NEXT_PUBLIC_DOMAIN_URL}/v/1
+							{process.env.NEXT_PUBLIC_DOMAIN_URL}/v/{videoId}
 						</div>
 						<Button
 							className='rounded-full font-bold font-space_grotesk'
 							onClick={() =>
 								navigator.clipboard
-									.writeText(`${process.env.NEXT_PUBLIC_DOMAIN_URL}/v/1`)
-									.then(() =>
-										toast({ variant: 'default', description: 'Copied!' })
+									.writeText(
+										`${process.env.NEXT_PUBLIC_DOMAIN_URL}/v/${videoId}`
 									)
+									.then(() => toast.success('Copied!'))
 							}
 						>
 							Copy

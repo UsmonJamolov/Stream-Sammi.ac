@@ -1,4 +1,4 @@
-import UserInformation from '../../v/_components/user-information'
+// import UserInformation from '../../v/_components/user-information'
 
 const StreamPage = () => {
 	return (
@@ -11,7 +11,7 @@ const StreamPage = () => {
 					</h1>
 
 					<div className='flex items-center justify-between mt-3'>
-						<UserInformation />
+						{/* <UserInformation /> */}
 					</div>
 				</div>
 				<div className='col-span-1'>

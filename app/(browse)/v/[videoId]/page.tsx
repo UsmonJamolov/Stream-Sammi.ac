@@ -38,7 +38,7 @@ const VideoPage = async ({ params }: VideoPageProps) => {
 					<div className='flex items-center justify-between mt-3'>
 						<UserInformation video={JSON.parse(JSON.stringify(video))} />
 
-						<VideoActions reaction={'LIKE'} />
+						<VideoActions reaction={'LIKE'} videoId={video.id} />
 					</div>
 
 					<Description
