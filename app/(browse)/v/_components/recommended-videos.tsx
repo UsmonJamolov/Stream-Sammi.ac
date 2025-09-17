@@ -1,13 +1,17 @@
-import { getHomeFeed } from '@/actions/feed.action'
+import { getRecommendedVideos } from '@/actions/video.action'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ChartNoAxesColumnIncreasing, Heart, MessageSquare } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export const RecommendedVideos = async () => {
-	const response = await getHomeFeed()
+interface RecommendedVideosProps {
+	videoId: string
+}
 
-	const feed = response?.data?.feed || []
+const RecommendedVideos = async ({ videoId }: RecommendedVideosProps) => {
+	const response = await getRecommendedVideos({ id: videoId })
+
+	const feed = response?.data?.videos || []
 
 	return (
 		<>
@@ -15,18 +19,19 @@ export const RecommendedVideos = async () => {
 
 			{feed.map(video => (
 				<Link
-					href={'/v/1'}
+					href={`/v/${video.id}`}
 					className='flex flex-col space-y-2 mt-4'
 					key={video.id}
 				>
 					<div className='flex gap-x-2'>
-						<Image
-							src={video.thumbnail}
-							alt={video.title}
-							width={96}
-							height={54}
-							className='object-cover rounded-md'
-						/>
+						<div className='w-24 h-14 rounded-md relative'>
+							<Image
+								src={video.thumbnail}
+								alt={video.title}
+								fill
+								className='object-cover rounded-md'
+							/>
+						</div>
 
 						<div className='flex flex-col space-y-0 flex-1 h-full'>
 							<p className='line-clamp-1 font-space_grotesk font-semibold'>
@@ -36,17 +41,17 @@ export const RecommendedVideos = async () => {
 							<div className='flex gap-x-4 pt-1'>
 								<div className='flex items-center text-muted-foreground gap-x-1'>
 									<ChartNoAxesColumnIncreasing className='size-4' />
-									<p className='text-xs'>200</p>
+									<p className='text-xs'>{video.views}</p>
 								</div>
 
 								<div className='flex items-center text-muted-foreground gap-x-1'>
 									<MessageSquare className='size-4' />
-									<p className='text-xs'>14</p>
+									<p className='text-xs'>{video._count.comments}</p>
 								</div>
 
 								<div className='flex items-center text-muted-foreground gap-x-1'>
 									<Heart className='size-4' />
-									<p className='text-xs'>88</p>
+									<p className='text-xs'>{video.likes}</p>
 								</div>
 							</div>
 						</div>
@@ -56,6 +61,8 @@ export const RecommendedVideos = async () => {
 		</>
 	)
 }
+
+export default RecommendedVideos
 
 export const RecommendedVideosSkeleton = () => {
 	return (

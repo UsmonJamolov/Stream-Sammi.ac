@@ -1,13 +1,12 @@
 import Description from '../_components/description'
 import UserInformation from '../_components/user-information'
 import VideoActions from '../_components/video-actions'
-import { Comments, CommentsSkeleton } from '../_components/comments'
-import {
-	RecommendedVideos,
+import  {Comments, CommentsSkeleton } from '../_components/comments'
+import RecommendedVideos, {
 	RecommendedVideosSkeleton,
 } from '../_components/recommended-videos'
 import { Suspense } from 'react'
-import { getVideoByID } from '@/actions/video.action'
+import { getVideoByID, getVideoReaction } from '@/actions/video.action'
 import { notFound } from 'next/navigation'
 import VideoPlayer from '../_components/video-player'
 
@@ -18,13 +17,14 @@ interface VideoPageProps {
 const VideoPage = async ({ params }: VideoPageProps) => {
 	const { videoId } = await params
 	const response = await getVideoByID({ id: videoId })
+
 	if (response?.data?.failure) return notFound()
 
 	const video = response?.data?.video
 
-	console.log(video)
-
 	if (!video) return null
+
+	const { reaction } = await getVideoReaction(video.id)
 
 	return (
 		<>
@@ -38,11 +38,15 @@ const VideoPage = async ({ params }: VideoPageProps) => {
 					<div className='flex items-center justify-between mt-3'>
 						<UserInformation video={JSON.parse(JSON.stringify(video))} />
 
-						<VideoActions reaction={'LIKE'} videoId={video.id} />
+						<VideoActions
+							reaction={reaction}
+							videoId={video.id}
+							videoUrl={video.videoUrl}
+						/>
 					</div>
 
 					<Description
-						views={12}
+						views={video.views}
 						createdAt={video.createdAt}
 						description={video.description}
 					/>
@@ -52,7 +56,7 @@ const VideoPage = async ({ params }: VideoPageProps) => {
 				</div>
 				<div className='col-span-1'>
 					<Suspense fallback={<RecommendedVideosSkeleton />}>
-						<RecommendedVideos />
+						<RecommendedVideos videoId={video.id} />
 					</Suspense>
 				</div>
 			</div>

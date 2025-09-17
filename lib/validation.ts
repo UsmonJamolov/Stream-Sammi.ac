@@ -17,3 +17,8 @@ export const updateVideoSchema = z.object({
 export const idSchema = z.object({
 	id: z.string(),
 })
+
+export const reactionSchema = z.object({
+	reaction: z.string(),
+	videoId: z.string(),
+})

@@ -1,5 +1,6 @@
 'use client'
 
+import { toggleReaction } from '@/actions/video.action'
 import { Button } from '@/components/ui/button'
 import {
 	Dialog,
@@ -10,8 +11,9 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
-import { cn } from '@/lib/utils'
+import { cn, showToastError } from '@/lib/utils'
 import { Download, Share2, ThumbsDown, ThumbsUp } from 'lucide-react'
+import { useTransition } from 'react'
 import {
 	FacebookIcon,
 	FacebookShareButton,
@@ -29,9 +31,20 @@ import { toast } from 'sonner'
 interface VideoActionsProps {
 	reaction: 'LIKE' | 'DISLIKE' | null
 	videoId: string
+	videoUrl: string
 }
 
-const VideoActions = ({ reaction, videoId }: VideoActionsProps) => {
+const VideoActions = ({ reaction, videoId, videoUrl }: VideoActionsProps) => {
+	const [isLoading, startTransition] = useTransition()
+
+	const handleReaction = async (reaction: 'LIKE' | 'DISLIKE') => {
+		startTransition(async () => {
+			const response = await toggleReaction({ videoId, reaction })
+			showToastError(response)
+			toast.success('Reaction updated!')
+		})
+	}
+
 	return (
 		<div className='flex items-center gap-x-2'>
 			<div className='rounded-full flex items-center'>
@@ -39,6 +52,8 @@ const VideoActions = ({ reaction, videoId }: VideoActionsProps) => {
 					size={'sm'}
 					className='rounded-full rounded-r-none border-r hover:bg-secondary/20 border-r-secondary-foreground/50'
 					variant={'secondary'}
+					disabled={isLoading}
+					onClick={() => handleReaction('LIKE')}
 				>
 					<ThumbsUp className={cn(reaction === 'LIKE' && 'fill-foreground')} />
 					<span>Like</span>
@@ -47,6 +62,8 @@ const VideoActions = ({ reaction, videoId }: VideoActionsProps) => {
 					size={'sm'}
 					className='rounded-full rounded-l-none hover:bg-secondary/20'
 					variant={'secondary'}
+					disabled={isLoading}
+					onClick={() => handleReaction('DISLIKE')}
 				>
 					<ThumbsDown
 						className={cn(reaction === 'DISLIKE' && 'fill-foreground')}
@@ -131,9 +148,17 @@ const VideoActions = ({ reaction, videoId }: VideoActionsProps) => {
 				size={'sm'}
 				className='rounded-full hover:bg-primary/20'
 				variant={'secondary'}
+				asChild
 			>
-				<Download />
-				<span>Download</span>
+				<a
+					download={true}
+					href={`${videoUrl}`}
+					target='_blank'
+					rel='noreferrer'
+				>
+					<Download />
+					<span>Download</span>
+				</a>
 			</Button>
 		</div>
 	)
