@@ -20,5 +20,16 @@ export const idSchema = z.object({
 
 export const reactionSchema = z.object({
 	reaction: z.string(),
-	videoId: z.string(),
+	id: z.string(),
 })
+
+export const videoIdSchema = z.object({
+	videoId: z.string().optional(),
+})
+
+export const commentSchema = z
+	.object({
+		id: z.string(),
+		content: z.string(),
+	})
+	.merge(videoIdSchema)

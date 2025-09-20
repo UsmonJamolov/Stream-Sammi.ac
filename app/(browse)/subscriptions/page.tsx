@@ -1,23 +1,23 @@
-import { getHomeFeed } from '@/actions/feed.action'
-import { getFollowing } from '@/actions/user.action'
-import UserAvatar from '@/components/shared/user-avatar'
+// import { getHomeFeed } from '@/actions/feed.action'
+// import { getFollowing } from '@/actions/user.action'
+// import UserAvatar from '@/components/shared/user-avatar'
 import { Separator } from '@/components/ui/separator'
-import { formatDistanceToNow } from 'date-fns'
-import Image from 'next/image'
-import Link from 'next/link'
+// import { formatDistanceToNow } from 'date-fns'
+// import Image from 'next/image'
+// import Link from 'next/link'
 
 const SubscriptionsPage = async () => {
-	const responseFeed = await getHomeFeed()
-	const responseUser = await getFollowing()
+	// const responseFeed = await getHomeFeed()
+	// const responseUser = await getFollowing()
 
-	const feeds = responseFeed?.data?.feed || []
-	const subscriptions = responseUser?.data?.following || []
+	// const feeds = responseFeed?.data?.feed || []
+	// const subscriptions = responseUser?.data?.following || []
 
 	return (
 		<>
 			<h1 className='text-2xl font-space_grotesk font-bold mb-2'>Users</h1>
 			<div className='w-full overflow-x-scroll flex items-center space-x-4 custom-scrollbar'>
-				{subscriptions.map(subscription => (
+				{/* {subscriptions.map(subscription => (
 					<Link key={subscription.id} href={`/u/${subscription.username}`}>
 						<UserAvatar
 							username={subscription.username}
@@ -29,14 +29,14 @@ const SubscriptionsPage = async () => {
 							{subscription.username}
 						</p>
 					</Link>
-				))}
+				))} */}
 			</div>
 			<Separator className='my-3' />
-			<h1 className='text-2xl font-space_grotesk font-bold mb-2'>
+			{/* <h1 className='text-2xl font-space_grotesk font-bold mb-2'>
 				{feeds.length > 0 ? 'Videos' : 'No videos found'}
-			</h1>
+			</h1> */}
 			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4'>
-				{feeds.map(feed => (
+				{/* {feeds.map(feed => (
 					<Link key={feed.id} href={`/v/${feed.id}`}>
 						<div>
 							<div className='h-56 rounded-lg relative'>
@@ -69,10 +69,9 @@ const SubscriptionsPage = async () => {
 							</div>
 						</div>
 					</Link>
-				))}
+				))} */}
 			</div>
 		</>
 	)
 }
-
 export default SubscriptionsPage

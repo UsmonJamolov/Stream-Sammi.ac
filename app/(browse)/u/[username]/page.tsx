@@ -1,10 +1,10 @@
-import { getUserByUsername } from '@/actions/user.action'
+import { getUserByUsername, isFollowingUser } from '@/actions/user.action'
 import UserAvatar from '@/components/shared/user-avatar'
 import { Button } from '@/components/ui/button'
 import { currentUser } from '@clerk/nextjs/server'
 import Link from 'next/link'
 import SubscribeBtn from '../../_components/subscribe-btn'
-import { UserContent, UserContentSkeleton } from '../_components/user-content'
+import {UserContent, UserContentSkeleton } from '../_components/user-content'
 import { Suspense } from 'react'
 
 interface UsernamePageProps {
@@ -21,6 +21,7 @@ const UsernamePage = async ({ params }: UsernamePageProps) => {
 	}
 
 	const user = response?.data?.user
+	const { isFollowing } = await isFollowingUser(user.id)
 
 	return (
 		<>
@@ -46,16 +47,17 @@ const UsernamePage = async ({ params }: UsernamePageProps) => {
 						<div className='flex items-center gap-x-2'>
 							<p>@{user.username}</p>
 							<div className='size-1 rounded-full bg-muted-foreground' />
-							<p className='text-muted-foreground'>12 subscribers</p>
+							<p className='text-muted-foreground'>
+								{user._count.followedBy} subscribers
+							</p>
 							<div className='size-1 rounded-full bg-muted-foreground' />
-							<p className='text-muted-foreground'>10 videos</p>
+							<p className='text-muted-foreground'>
+								{user._count.videos} videos
+							</p>
 						</div>
 
 						<p className='line-clamp-2 leading-4 text-sm text-muted-foreground'>
-							Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-							Reiciendis, nobis, provident beatae omnis recusandae iusto quia
-							nisi cum exercitationem enim vel rem ipsam illum ex nihil! Illum
-							tempora sequi a.
+							{user.bio || 'No bio provided'}
 						</p>
 
 						{self && user && self.username === user.username ? (
@@ -79,7 +81,12 @@ const UsernamePage = async ({ params }: UsernamePageProps) => {
 							</div>
 						) : (
 							<div>
-								<SubscribeBtn isFollowing={false} />
+								<div className='mt-4'>
+									<SubscribeBtn
+										isFollowing={isFollowing}
+										otherUserId={user.id}
+									/>
+								</div>
 							</div>
 						)}
 					</div>
@@ -87,7 +94,7 @@ const UsernamePage = async ({ params }: UsernamePageProps) => {
 			</div>
 
 			<Suspense fallback={<UserContentSkeleton />}>
-				<UserContent />
+				<UserContent userId={user.id}  />
 			</Suspense>
 		</>
 	)

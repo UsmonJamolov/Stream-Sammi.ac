@@ -37,9 +37,9 @@ interface VideoActionsProps {
 const VideoActions = ({ reaction, videoId, videoUrl }: VideoActionsProps) => {
 	const [isLoading, startTransition] = useTransition()
 
-	const handleReaction = async (reaction: 'LIKE' | 'DISLIKE') => {
+	const handleReaction = (reaction: 'LIKE' | 'DISLIKE') => {
 		startTransition(async () => {
-			const response = await toggleReaction({ videoId, reaction })
+			const response = await toggleReaction({ id: videoId, reaction })
 			showToastError(response)
 			toast.success('Reaction updated!')
 		})

@@ -37,7 +37,6 @@ export const ourFileRouter = {
 					videoUrlKey: file.key,
 				},
 			})
-
 			return { url: file.name, videoId: newVideo.id }
 		}),
 } satisfies FileRouter

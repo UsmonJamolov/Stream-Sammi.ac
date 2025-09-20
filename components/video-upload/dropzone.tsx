@@ -8,7 +8,6 @@ const Dropzone = () => {
 	const [toastId, setToastId] = useState<string | null>(null)
 	const { setStep, setProgress, setLoadingProgress, setVideoId } =
 		useUploadVideo()
-
 	const router = useRouter()
 
 	return (
@@ -19,6 +18,7 @@ const Dropzone = () => {
 				toast.success('Video uploaded successfully!', {
 					id: 'uploading-video',
 				})
+				router.refresh()
 			}}
 			onUploadProgress={progress => {
 				setLoadingProgress(progress)
@@ -30,7 +30,6 @@ const Dropzone = () => {
 				} else {
 					toast.loading(toastId, { id: 'uploading-video' })
 				}
-				router.refresh()
 			}}
 			onUploadBegin={() => {
 				setStep(2)

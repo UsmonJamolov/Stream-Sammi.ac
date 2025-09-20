@@ -1,5 +1,3 @@
-// import UserInformation from '../../v/_components/user-information'
-
 const StreamPage = () => {
 	return (
 		<>

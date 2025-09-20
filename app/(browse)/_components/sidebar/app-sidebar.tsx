@@ -5,11 +5,11 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	SidebarSeparator,
 } from '@/components/ui/sidebar'
 import Navigation from './navigation'
-import Following, { FollowingSkeleton } from './following'
-import Recommended, { RecommendedSkeleton } from './recommended'
+import  {Following, FollowingSkeleton } from './following'
+import  {Recommended, RecommendedSkeleton } from './recommended'
+import Link from 'next/link'
 import { ChevronUp, User2 } from 'lucide-react'
 import {
 	DropdownMenu,
@@ -20,7 +20,6 @@ import {
 import { SignOutButton } from '@clerk/nextjs'
 import { currentUser } from '@clerk/nextjs/server'
 import { Suspense } from 'react'
-import Link from 'next/link'
 
 const AppSidebar = async () => {
 	const user = await currentUser()
@@ -29,11 +28,9 @@ const AppSidebar = async () => {
 		<Sidebar collapsible='icon'>
 			<SidebarContent>
 				<Navigation />
-				<SidebarSeparator />
 				<Suspense fallback={<FollowingSkeleton />}>
 					<Following />
 				</Suspense>
-				<SidebarSeparator />
 				<Suspense fallback={<RecommendedSkeleton />}>
 					<Recommended />
 				</Suspense>

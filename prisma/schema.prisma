@@ -20,9 +20,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  videos    Video[]
-  reactions VideoReaction[]
-  comments  Comment[]
+  videos           Video[]
+  reactions        VideoReaction[]
+  comments         Comment[]
+  commentReactions CommentReaction[]
+  replyComments    ReplyComment[]
 
   following  Follow[] @relation(name: "Following")
   followedBy Follow[] @relation(name: "FollowedBy")
@@ -78,13 +80,48 @@ model Comment {
   videoId String
   userId  String
 
+  likes    Int @default(0)
+  dislikes Int @default(0)
+
   video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  reactions CommentReaction[]
+  replies   ReplyComment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CommentReaction {
+  id String @id @default(cuid())
+
+  commentId String
+  userId    String
+
+  reaction String
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([videoId, userId])
+  @@unique([commentId, userId])
+}
+
+model ReplyComment {
+  id      String @id @default(cuid())
+  content String @db.Text
+
+  commentId String
+  userId    String
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Follow {

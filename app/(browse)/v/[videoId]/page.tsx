@@ -1,8 +1,8 @@
 import Description from '../_components/description'
 import UserInformation from '../_components/user-information'
 import VideoActions from '../_components/video-actions'
-import  {Comments, CommentsSkeleton } from '../_components/comments'
-import RecommendedVideos, {
+import {Comments, CommentsSkeleton } from '../_components/comments'
+import {RecommendedVideos,
 	RecommendedVideosSkeleton,
 } from '../_components/recommended-videos'
 import { Suspense } from 'react'
@@ -51,7 +51,7 @@ const VideoPage = async ({ params }: VideoPageProps) => {
 						description={video.description}
 					/>
 					<Suspense fallback={<CommentsSkeleton />}>
-						<Comments />
+						<Comments videoId={video.id} />
 					</Suspense>
 				</div>
 				<div className='col-span-1'>

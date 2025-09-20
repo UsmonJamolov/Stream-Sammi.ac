@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/db'
 import { actionClient } from '@/lib/safe-action'
-import { idSchema, reactionSchema } from '@/lib/validation'
+import { commentSchema, idSchema, reactionSchema } from '@/lib/validation'
 import { getAuthorizedUser, getUser } from './user.action'
 import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
@@ -93,10 +93,49 @@ export const getVideoReaction = async (videoId: string) => {
 	return { reaction: reaction.reaction as 'LIKE' | 'DISLIKE' }
 }
 
+export const getComments = actionClient
+	.schema(idSchema)
+	.action(async ({ parsedInput }) => {
+		const { id } = parsedInput
+		const { user } = await getUser()
+
+		const comments = await db.comment.findMany({
+			orderBy: { createdAt: 'desc' },
+			where: { videoId: id },
+			select: {
+				id: true,
+				content: true,
+				createdAt: true,
+				reactions: { select: { reaction: true, userId: true } },
+				likes: true,
+				user: {
+					select: { id: true, username: true, fullName: true, avatar: true },
+				},
+				replies: {
+					select: {
+						content: true,
+						id: true,
+						createdAt: true,
+						user: { select: { username: true, avatar: true } },
+					},
+				},
+				_count: { select: { replies: true } },
+			},
+		})
+
+		const filteredComments = comments.map(comment => ({
+			...comment,
+			userReaction: comment.reactions.find(c => c.userId === user?.id)
+				?.reaction as 'LIKE' | 'DISLIKE' | null,
+		}))
+
+		return { comments: filteredComments }
+	})
+
 export const toggleReaction = actionClient
 	.schema(reactionSchema)
 	.action(async ({ parsedInput }) => {
-		const { reaction, videoId } = parsedInput
+		const { reaction, id: videoId } = parsedInput
 		if (!reaction || !videoId) return { failure: 'Invalid input' }
 
 		const { user } = await getAuthorizedUser()
@@ -104,6 +143,7 @@ export const toggleReaction = actionClient
 
 		const existingReaction = await db.videoReaction.findUnique({
 			where: { videoId_userId: { videoId, userId: user.id } },
+			select: { id: true, reaction: true },
 		})
 
 		if (existingReaction) {
@@ -134,6 +174,53 @@ export const toggleReaction = actionClient
 		})
 
 		revalidatePath(`/v/${videoId}`)
+
+		return { message: 'Reaction updated' }
+	})
+
+export const toggleCommentReaction = actionClient
+	.schema(reactionSchema)
+	.action(async ({ parsedInput }) => {
+		const { reaction, id: commentId } = parsedInput
+		if (!reaction || !commentId) return { failure: 'Invalid input' }
+
+		const { user } = await getAuthorizedUser()
+		if (!user) return { failure: 'Unauthorized' }
+
+		const existingReaction = await db.commentReaction.findUnique({
+			where: { commentId_userId: { commentId, userId: user.id } },
+			select: { id: true, reaction: true },
+		})
+
+		if (existingReaction) {
+			if (existingReaction.reaction === reaction) {
+				await db.commentReaction.delete({ where: { id: existingReaction.id } })
+			} else {
+				await db.commentReaction.update({
+					where: { id: existingReaction.id },
+					data: { reaction },
+				})
+			}
+		} else {
+			await db.commentReaction.create({
+				data: { commentId, userId: user.id, reaction },
+			})
+		}
+
+		const likeCount = await db.commentReaction.count({
+			where: { commentId, reaction: 'LIKE' },
+		})
+		const dislikeCount = await db.commentReaction.count({
+			where: { commentId, reaction: 'DISLIKE' },
+		})
+
+		const comment = await db.comment.update({
+			where: { id: commentId },
+			data: { likes: likeCount, dislikes: dislikeCount },
+			select: { videoId: true },
+		})
+
+		revalidatePath(`/v/${comment.videoId}`)
 
 		return { message: 'Reaction updated' }
 	})
@@ -170,33 +257,36 @@ export const incrementViewCount = async (videoId: string) => {
 	}
 }
 
-export const getComments = actionClient.action(async () => {
-	await new Promise(resolve => setTimeout(resolve, 1000))
-	return { comments: data }
-})
+export const createComment = actionClient
+	.schema(commentSchema)
+	.action(async ({ parsedInput }) => {
+		const { id: videoId, content } = parsedInput
+		if (!videoId || !content) return { failure: 'Invalid input' }
 
-const data = [
-	{
-		id: '1',
-		createdAt: new Date('2025-02-01T12:00:00Z'),
-		content: 'Hello world',
-		user: {
-			id: '1',
-			username: 'samar',
-			avatar: 'https://github.com/shadcn.png',
-			followedBy: 8,
-		},
-	},
-	{
-		id: '2',
-		createdAt: new Date('2025-02-01T12:00:00Z'),
-		content:
-			'Great video about the Olympics 2025 in Paris is going to be the best one yet',
-		user: {
-			id: '1',
-			username: 'oman',
-			avatar: 'https://github.com/shadcn.png',
-			followedBy: 8,
-		},
-	},
-]
+		const { user } = await getAuthorizedUser()
+		if (!user) return { failure: 'Unauthorized' }
+
+		await db.comment.create({
+			data: { videoId, userId: user.id, content },
+		})
+
+		revalidatePath(`/v/${videoId}`)
+		return { message: 'Comment created' }
+	})
+
+export const replyComment = actionClient
+	.schema(commentSchema)
+	.action(async ({ parsedInput }) => {
+		const { id: commentId, content, videoId } = parsedInput
+		if (!commentId || !content) return { failure: 'Invalid input' }
+
+		const { user } = await getAuthorizedUser()
+		if (!user) return { failure: 'Unauthorized' }
+
+		await db.replyComment.create({
+			data: { commentId, userId: user.id, content },
+		})
+
+		revalidatePath(`/v/${videoId}`)
+		return { message: 'Reply created' }
+	})

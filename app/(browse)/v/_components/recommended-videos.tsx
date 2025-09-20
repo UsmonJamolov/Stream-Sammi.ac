@@ -8,7 +8,7 @@ interface RecommendedVideosProps {
 	videoId: string
 }
 
-const RecommendedVideos = async ({ videoId }: RecommendedVideosProps) => {
+export const RecommendedVideos = async ({ videoId }: RecommendedVideosProps) => {
 	const response = await getRecommendedVideos({ id: videoId })
 
 	const feed = response?.data?.videos || []
@@ -61,8 +61,6 @@ const RecommendedVideos = async ({ videoId }: RecommendedVideosProps) => {
 		</>
 	)
 }
-
-export default RecommendedVideos
 
 export const RecommendedVideosSkeleton = () => {
 	return (

@@ -8,22 +8,84 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 export const getRecommended = actionClient.action(async () => {
-	await new Promise(resolve => setTimeout(resolve, 1000))
-	return { recommended: data }
+	const { user } = await getUser()
+
+	if (user) {
+		const users = await db.user.findMany({
+			where: {
+				AND: [
+					{ NOT: { id: user.id } },
+					{ NOT: { followedBy: { some: { followerId: user.id } } } },
+				],
+			},
+			include: { _count: { select: { followedBy: true } } },
+			orderBy: { createdAt: 'desc' },
+			take: 5,
+		})
+
+		return { recommended: users }
+	} else {
+		const users = await db.user.findMany({
+			orderBy: { createdAt: 'desc' },
+			take: 5,
+			include: { _count: { select: { followedBy: true } } },
+		})
+
+		return { recommended: users }
+	}
 })
 
 export const getFollowing = actionClient.action(async () => {
-	await new Promise(resolve => setTimeout(resolve, 1000))
-	return { following: data }
+	const { user } = await getUser()
+	if (!user) return { following: [] }
+
+	const following = await db.follow.findMany({
+		where: { followerId: user.id },
+		select: {
+			following: {
+				include: { _count: { select: { followedBy: true } } },
+			},
+			id: true,
+		},
+		take: 5,
+	})
+
+	return { following }
 })
 
 export const getUserByUsername = actionClient
 	.schema(usernameSchema)
 	.action(async ({ parsedInput }) => {
-		await new Promise(resolve => setTimeout(resolve, 1000))
 		const { username } = parsedInput
-		const user = data.find(user => user.username === username)
+		if (!username) return { user: null }
+
+		const user = await db.user.findUnique({
+			where: { username },
+			include: { _count: { select: { followedBy: true, videos: true } } },
+		})
+		if (!user) return { user: null }
+
 		return { user }
+	})
+
+export const getUserContent = actionClient
+	.schema(idSchema)
+	.action(async ({ parsedInput }) => {
+		const { id } = parsedInput
+
+		const videos = await db.video.findMany({
+			where: { userId: id },
+			orderBy: { createdAt: 'desc' },
+			select: {
+				id: true,
+				title: true,
+				thumbnail: true,
+				views: true,
+				createdAt: true,
+			},
+		})
+
+		return { videos }
 	})
 
 export const getAuthorizedUser = async () => {
@@ -121,20 +183,3 @@ export const unfollowUser = actionClient
 
 		return { message: 'Unfollowed successfully' }
 	})
-
-const data = [
-	{
-		id: '1',
-		username: 'samarbadriddin0v',
-		avatar: 'https://github.com/shadcn.png',
-		followedBy: 8,
-		fullName: 'Samar Badriddinov',
-	},
-	{
-		id: '2',
-		username: 'oman',
-		avatar: 'https://github.com/shadcn.png',
-		followedBy: 23,
-		fullName: 'Oman',
-	},
-]

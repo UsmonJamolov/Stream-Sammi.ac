@@ -7,50 +7,61 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarSeparator,
 } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 
-const Following = async () => {
+export const Following = async () => {
 	const data = await getFollowing()
 
 	const following = data?.data?.following || []
 
-	return (
-		<SidebarGroup>
-			<SidebarGroupLabel>Following</SidebarGroupLabel>
-			<SidebarContent>
-				<SidebarMenu>
-					{following.map(item => (
-						<SidebarMenuItem key={item.id}>
-							<SidebarMenuButton asChild size={'lg'}>
-								<Link href={`/u/${item.username}`}>
-									<UserAvatar
-										avatar={item.avatar}
-										username={item.username}
-										variant={'square'}
-										isLive
-									/>
+	if (following.length === 0) return null
 
-									<div className='flex flex-col'>
-										<p className='text-sm font-space_grotesk'>
-											@{item.username}
-										</p>
-										<p className='text-xs text-muted-foreground'>
-											{item.followedBy} follower{item.followedBy !== 1 && 's'}
-										</p>
-									</div>
-								</Link>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-					))}
-				</SidebarMenu>
-			</SidebarContent>
-		</SidebarGroup>
+	return (
+		<>
+			<SidebarSeparator />
+			<SidebarGroup>
+				<SidebarGroupLabel>Following</SidebarGroupLabel>
+				<SidebarContent>
+					<SidebarMenu>
+						{following.length === 0 && (
+							<SidebarMenuItem>
+								<SidebarMenuButton asChild size={'lg'}>
+									<p className='text-sm text-muted-foreground'>No following</p>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+						)}
+						{following.map(item => (
+							<SidebarMenuItem key={item.id}>
+								<SidebarMenuButton asChild size={'lg'}>
+									<Link href={`/u/${item.following.username}`}>
+										<UserAvatar
+											avatar={item.following.avatar}
+											username={item.following.username}
+											variant={'square'}
+										/>
+
+										<div className='flex flex-col'>
+											<p className='text-sm font-space_grotesk'>
+												@{item.following.username}
+											</p>
+											<p className='text-xs text-muted-foreground'>
+												{item.following._count.followedBy} follower
+												{item.following._count.followedBy !== 1 && 's'}
+											</p>
+										</div>
+									</Link>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+						))}
+					</SidebarMenu>
+				</SidebarContent>
+			</SidebarGroup>
+		</>
 	)
 }
-
-export default Following
 
 export const FollowingSkeleton = () => {
 	return (

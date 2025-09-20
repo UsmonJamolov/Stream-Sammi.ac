@@ -7,48 +7,53 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarSeparator,
 } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
 
-const Recommended = async () => {
+export const Recommended = async () => {
 	const data = await getRecommended()
 
 	const recommended = data?.data?.recommended || []
 
+	if (recommended.length === 0) return null
+
 	return (
-		<SidebarGroup>
-			<SidebarGroupLabel>Recommended</SidebarGroupLabel>
-			<SidebarContent>
-				<SidebarMenu>
-					{recommended.map(item => (
-						<SidebarMenuItem key={item.id}>
-							<SidebarMenuButton asChild size={'lg'}>
-								<Link href={`/u/${item.username}`}>
-									<UserAvatar
-										avatar={item.avatar}
-										username={item.username}
-										variant={'square'}
-									/>
-									<div className='flex flex-col'>
-										<p className='text-sm font-space_grotesk'>
-											@{item.username}
-										</p>
-										<p className='text-xs text-muted-foreground'>
-											{item.followedBy} follower{item.followedBy !== 1 && 's'}
-										</p>
-									</div>
-								</Link>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-					))}
-				</SidebarMenu>
-			</SidebarContent>
-		</SidebarGroup>
+		<>
+			<SidebarSeparator />
+			<SidebarGroup>
+				<SidebarGroupLabel>Recommended</SidebarGroupLabel>
+				<SidebarContent>
+					<SidebarMenu>
+						{recommended.map(item => (
+							<SidebarMenuItem key={item.id}>
+								<SidebarMenuButton asChild size={'lg'}>
+									<Link href={`/u/${item.username}`}>
+										<UserAvatar
+											avatar={item.avatar}
+											username={item.username}
+											variant={'square'}
+										/>
+										<div className='flex flex-col'>
+											<p className='text-sm font-space_grotesk'>
+												@{item.username}
+											</p>
+											<p className='text-xs text-muted-foreground'>
+												{item._count.followedBy} follower
+												{item._count.followedBy !== 1 && 's'}
+											</p>
+										</div>
+									</Link>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+						))}
+					</SidebarMenu>
+				</SidebarContent>
+			</SidebarGroup>
+		</>
 	)
 }
-
-export default Recommended
 
 export const RecommendedSkeleton = () => {
 	return (
