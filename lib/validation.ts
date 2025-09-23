@@ -32,4 +32,4 @@ export const commentSchema = z
 		id: z.string(),
 		content: z.string(),
 	})
-	.merge(videoIdSchema)
+	.merge(videoIdSchema)	

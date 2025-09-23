@@ -1,10 +1,21 @@
+import { getLatestVideo } from '@/actions/dashboard.action'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
+import { format, formatDistanceToNow } from 'date-fns'
 import { Clock, Eye, Heart, MessageSquare, Video } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
-const LatestVideo = () => {
+export const LatestVideo = async () => {
+	const response = await getLatestVideo()
+	if (response?.data?.failure) return notFound()
+
+	if (!response?.data || !response.data.video) return null
+
+	const video = response.data.video
+
 	return (
 		<>
 			<div className='p-4 border rounded-xl'>
@@ -15,20 +26,19 @@ const LatestVideo = () => {
 				<div className='w-full relative h-44 mt-4'>
 					<div className='absolute inset-0 z-40 bg-gradient-to-t from-primary rounded-lg' />
 					<Image
-						src={
-							'https://img.olympics.com/images/image/private/t_16-9_640/f_auto/v1538355600/primary/owtwv8todbwx68perkjz'
-						}
-						alt='alt'
+						src={video.thumbnail}
+						alt={video.title}
 						fill
 						className='object-cover rounded-lg'
 					/>
 					<div className='absolute bottom-0 z-50 p-2 text-lg font-space_grotesk font-bold text-primary-foreground'>
-						The Olympics
+						{video.title}
 					</div>
 				</div>
 
 				<p className='mt-4 text-sm text-muted-foreground'>
-					2 days compared to your typical performance:
+					{formatDistanceToNow(new Date(video.createdAt))} compared to your
+					typical performance:
 				</p>
 
 				<Separator className='my-2' />
@@ -40,7 +50,7 @@ const LatestVideo = () => {
 							<span>Created at</span>
 						</div>
 						<p className='text-muted-foreground font-medium border-b border-b-secondary text-sm'>
-							2 days ago
+							{format(new Date(video.createdAt), 'MMM dd, yyyy')}
 						</p>
 					</div>
 
@@ -50,7 +60,7 @@ const LatestVideo = () => {
 							<span>Views</span>
 						</div>
 						<p className='text-muted-foreground font-medium border-b border-b-secondary text-sm'>
-							300
+							{video.views}
 						</p>
 					</div>
 
@@ -60,7 +70,7 @@ const LatestVideo = () => {
 							<span>Messages</span>
 						</div>
 						<p className='text-muted-foreground font-medium border-b border-b-secondary text-sm'>
-							14
+							{video._count.comments}
 						</p>
 					</div>
 
@@ -70,7 +80,7 @@ const LatestVideo = () => {
 							<span>Likes</span>
 						</div>
 						<p className='text-muted-foreground font-medium border-b border-b-secondary text-sm'>
-							99
+							{video.likes}
 						</p>
 					</div>
 				</div>
@@ -82,7 +92,7 @@ const LatestVideo = () => {
 						asChild
 						className='w-fit rounded-full'
 					>
-						<Link href={`/dashboard/videos/${'videoId'}`}>
+						<Link href={`/dashboard/videos/${video.id}`}>
 							<span>Go to video</span>
 							<Video />
 						</Link>
@@ -94,8 +104,8 @@ const LatestVideo = () => {
 						asChild
 						className='w-fit rounded-full'
 					>
-						<Link href={`/dashboard/videos/${'videoId'}`}>
-							<span>See comments (29)</span>
+						<Link href={`/dashboard/videos/${video.id}`}>
+							<span>See comments ({video._count.comments})</span>
 						</Link>
 					</Button>
 				</div>
@@ -104,4 +114,53 @@ const LatestVideo = () => {
 	)
 }
 
-export default LatestVideo
+export const LatestVideoSkeleton = () => {
+	return (
+		<div className='p-4 border rounded-xl'>
+			<Skeleton className='w-1/2 h-3' />
+			<Skeleton className='w-full h-44 mt-6' />
+			<Skeleton className='w-full h-3 mt-4' />
+
+			<Separator className='my-2' />
+
+			<div className='space-y-2'>
+				<div className='flex items-center justify-between'>
+					<div className='font-space_grotesk flex items-center gap-x-1'>
+						<Clock className='size-4' />
+						<span>Created at</span>
+					</div>
+					<Skeleton className='w-1/4 h-3' />
+				</div>
+
+				<div className='flex items-center justify-between'>
+					<div className='font-space_grotesk flex items-center gap-x-1'>
+						<Eye className='size-4' />
+						<span>Views</span>
+					</div>
+					<Skeleton className='w-1/3 h-3' />
+				</div>
+
+				<div className='flex items-center justify-between'>
+					<div className='font-space_grotesk flex items-center gap-x-1'>
+						<MessageSquare className='size-4' />
+						<span>Messages</span>
+					</div>
+					<Skeleton className='w-1/4 h-3' />
+				</div>
+
+				<div className='flex items-center justify-between'>
+					<div className='font-space_grotesk flex items-center gap-x-1'>
+						<Heart className='size-4' />
+						<span>Likes</span>
+					</div>
+					<Skeleton className='w-1/4 h-3' />
+				</div>
+			</div>
+
+			<div className='space-y-4 flex flex-col mt-4'>
+				<Skeleton className='w-1/2 h-10 rounded-full' />
+				<Skeleton className='w-1/2 h-10 rounded-full' />
+			</div>
+		</div>
+	)
+}

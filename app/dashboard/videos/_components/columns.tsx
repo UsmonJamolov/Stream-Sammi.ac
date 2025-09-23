@@ -87,9 +87,9 @@ export const columns: ColumnDef<DatatType>[] = [
 	},
 	{
 		accessorKey: 'views',
-		header: () => <div className='text-right'>Views</div>,
+		header: 'Views',
 		cell: ({ row }) => (
-			<div className='flex items-center gap-x-1 justify-end'>
+			<div className='flex items-center gap-x-1'>
 				<Eye className='size-4' />
 				<span>{row.original.views}</span>
 			</div>
@@ -97,9 +97,9 @@ export const columns: ColumnDef<DatatType>[] = [
 	},
 	{
 		accessorKey: 'comments',
-		header: () => <div className='text-right'>Comments</div>,
+		header: 'Comments',
 		cell: ({ row }) => (
-			<div className='flex items-center gap-x-1 justify-end'>
+			<div className='flex items-center gap-x-1'>
 				<MessageSquare className='size-4' />
 				<span>{row.original.comments}</span>
 			</div>
@@ -107,9 +107,9 @@ export const columns: ColumnDef<DatatType>[] = [
 	},
 	{
 		accessorKey: 'likes',
-		header: () => <div className='text-right'>Likes</div>,
+		header: 'Likes',
 		cell: ({ row }) => (
-			<div className='flex items-center gap-x-1 justify-end'>
+			<div className='flex items-center gap-x-1'>
 				<Heart className='size-4' />
 				<span>{row.original.likes}</span>
 			</div>

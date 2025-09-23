@@ -1,30 +1,69 @@
+import { getLatestSubscribers } from '@/actions/dashboard.action'
 import UserAvatar from '@/components/shared/user-avatar'
+import { Skeleton } from '@/components/ui/skeleton'
 
-const Subscribers = () => {
+export const Subscribers = async () => {
+	const response = await getLatestSubscribers()
+	if (response?.data?.failure) return null
+
+	if (!response?.data?.subscribers) return null
+
+	const subscribers = response?.data?.subscribers
+
+	return (
+		<>
+			<div className='p-4 border rounded-xl'>
+				<h3 className='text-lg font-space_grotesk font-semibold'>
+					Recent subscribers
+				</h3>
+
+				<div className='space-y-2 mt-4'>
+					{subscribers.map(subscriber => (
+						<div
+							key={subscriber.id}
+							className='flex itemsce gapy-4 h-full w-full rounded-md pb-2 gap-x-2'
+						>
+							<UserAvatar
+								avatar={subscriber.follower.avatar}
+								username={subscriber.follower.username}
+							/>
+
+							<div className='flex flex-col space-y-0'>
+								<p className='font-space_grotesk font-bold text-md'>
+									@{subscriber.follower.username}
+								</p>
+								<p className='text-muted-foreground text-xs'>
+									{subscriber.follower._count.followedBy} followers
+								</p>
+							</div>
+						</div>
+					))}
+				</div>
+			</div>
+		</>
+	)
+}
+
+export const SubscribersSkeleton = () => {
 	return (
 		<div className='p-4 border rounded-xl'>
-			<h3 className='text-lg font-space_grotesk font-semibold'>
-				Recent subscribers
-			</h3>
+			<Skeleton className='w-1/2 h-3' />
 
 			<div className='space-y-2 mt-4'>
-				{/* Map */}
-				<div className='flex itemsce gapy-4 h-full w-full rounded-md pb-2 gap-x-2'>
-					<UserAvatar
-						avatar='https://github.com/shadcn.png'
-						username='samarbadriddin0v'
-					/>
+				{Array.from({ length: 5 }).map((_, i) => (
+					<div
+						key={i}
+						className='flex itemsce gapy-4 h-full w-full rounded-md pb-2 gap-x-2'
+					>
+						<Skeleton className='w-8 h-8 rounded-full' />
 
-					<div className='flex flex-col space-y-0'>
-						<p className='font-space_grotesk font-bold text-md'>
-							@samarbadriddin0v
-						</p>
-						<p className='text-muted-foreground text-xs'>23 followers</p>
+						<div className='flex flex-col space-y-2'>
+							<Skeleton className='w-20 h-3' />
+							<Skeleton className='w-10 h-2' />
+						</div>
 					</div>
-				</div>
+				))}
 			</div>
 		</div>
 	)
 }
-
-export default Subscribers

@@ -14,6 +14,18 @@ export const getVideos = actionClient.action(async () => {
 
 	const videos = await db.video.findMany({
 		where: { userId: user.id },
+		orderBy: { createdAt: 'desc' },
+		select: {
+			id: true,
+			title: true,
+			thumbnail: true,
+			createdAt: true,
+			views: true,
+			likes: true,
+			description: true,
+			visibility: true,
+			_count: { select: { comments: true } },
+		},
 	})
 
 	return { videos: videos }
@@ -37,6 +49,98 @@ export const getVideoById = actionClient
 
 		return { video }
 	})
+
+export const getLatestVideo = actionClient.action(async () => {
+	
+	const { user } = await getAuthorizedUser()
+	if (!user) return { failure: 'Unauthorized' }
+
+	const video = await db.video.findFirst({
+		where: { userId: user.id },
+		orderBy: { createdAt: 'desc' },
+		select: {
+			id: true,
+			title: true,
+			thumbnail: true,
+			createdAt: true,
+			views: true,
+			likes: true,
+			_count: { select: { comments: true } },
+		},
+	})
+	if (!video) return { failure: 'No video found' }
+
+	return { video }
+})
+
+export const getPublishedVideos = actionClient.action(async () => {
+	const { user } = await getAuthorizedUser()
+	if (!user) return { failure: 'Unauthorized' }
+
+	const videos = await db.video.findMany({
+		where: { userId: user.id },
+		orderBy: { createdAt: 'desc' },
+		take: 5,
+		select: {
+			id: true,
+			title: true,
+			thumbnail: true,
+			createdAt: true,
+			views: true,
+			likes: true,
+			_count: { select: { comments: true } },
+		},
+	})
+	return { videos }
+})
+
+export const getLatestSubscribers = actionClient.action(async () => {
+	const { user } = await getAuthorizedUser()
+	if (!user) return { failure: 'Unauthorized' }
+
+	const subscribers = await db.follow.findMany({
+		where: { followingId: user.id },
+		orderBy: { createdAt: 'desc' },
+		take: 5,
+		select: {
+			id: true,
+			follower: {
+				select: {
+					id: true,
+					username: true,
+					avatar: true,
+					_count: { select: { followedBy: true } },
+				},
+			},
+		},
+	})
+
+	return { subscribers }
+})
+
+export const getLatestComments = actionClient.action(async () => {
+	const { user } = await getAuthorizedUser()
+	if (!user) return { failure: 'Unauthorized' }
+
+	const comments = await db.comment.findMany({
+		where: { video: { userId: user.id } },
+		orderBy: { createdAt: 'desc' },
+		take: 5,
+		select: {
+			id: true,
+			content: true,
+			createdAt: true,
+			user: {
+				select: { id: true, username: true, avatar: true },
+			},
+			video: {
+				select: { id: true, title: true, thumbnail: true },
+			},
+		},
+	})
+
+	return { comments }
+})
 
 export const updateVideo = actionClient
 	.schema(updateVideoSchema)

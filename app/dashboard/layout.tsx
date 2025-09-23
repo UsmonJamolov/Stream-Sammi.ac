@@ -13,7 +13,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
 			<main className='w-full h-full'>
 				<AppNavbar />
-				<div className='max-w-6xl container pt-4'>{children}</div>
+				<div className='max-w-6xl container pt-4 pb-12'>{children}</div>
 			</main>
 		</SidebarProvider>
 	)

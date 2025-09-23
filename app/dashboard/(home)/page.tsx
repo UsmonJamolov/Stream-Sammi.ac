@@ -1,9 +1,16 @@
 import { Separator } from '@/components/ui/separator'
-import LatestVideo from './_components/latest-video'
+import  {LatestVideo, LatestVideoSkeleton } from './_components/latest-video'
 import LatestStream from './_components/latest-stream'
-import PublishedVideo from './_components/published-video'
-import Subscribers from './_components/subscribers'
-import LatestComments from './_components/latest-comments'
+import  {
+	PublishedVideo,
+	PublishedVideoSkeleton,
+} from './_components/published-video'
+import  {Subscribers, SubscribersSkeleton } from './_components/subscribers'
+import  {
+	LatestComments,
+	LatestCommentsSkeleton,
+} from './_components/latest-comments'
+import { Suspense } from 'react'
 
 const DashboarPage = () => {
 	return (
@@ -21,14 +28,22 @@ const DashboarPage = () => {
 			<Separator className='my-2' />
 
 			<div className='grid grid-cols-3 gap-4 mt-4'>
-				<LatestVideo />
+				<Suspense fallback={<LatestVideoSkeleton />}>
+					<LatestVideo />
+				</Suspense>
 				<div className='space-y-6'>
 					<LatestStream />
-					<PublishedVideo />
+					<Suspense fallback={<PublishedVideoSkeleton />}>
+						<PublishedVideo />
+					</Suspense>
 				</div>
 				<div className='space-y-6'>
-					<Subscribers />
-					<LatestComments />
+					<Suspense fallback={<SubscribersSkeleton />}>
+						<Subscribers />
+					</Suspense>
+					<Suspense fallback={<LatestCommentsSkeleton />}>
+						<LatestComments />
+					</Suspense>
 				</div>
 			</div>
 		</>

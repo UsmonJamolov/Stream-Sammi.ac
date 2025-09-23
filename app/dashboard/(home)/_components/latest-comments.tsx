@@ -1,53 +1,83 @@
+import { getLatestComments } from '@/actions/dashboard.action'
 import UserAvatar from '@/components/shared/user-avatar'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
 import Image from 'next/image'
 
-const LatestComments = () => {
+export const LatestComments = async () => {
+	const response = await getLatestComments()
+	if (response?.data?.failure) return null
+
+	if (!response?.data?.comments) return null
+
+	const comments = response?.data?.comments
+
+	return (
+		<>
+			<div className='p-4 border rounded-xl'>
+				<h3 className='text-lg font-space_grotesk font-semibold'>
+					Latest comments
+				</h3>
+				<p className='text-muted-foreground text-xs'>Channel comments</p>
+				<Separator className='my-2' />
+
+				<div className='flex flex-col space-y-2'>
+					{comments.map(comment => (
+						<div key={comment.id} className='flex items-center justify-between'>
+							<div className='flex items-start gap-x-2 flex-1'>
+								<UserAvatar
+									avatar={comment.user.avatar}
+									username={comment.user.username}
+								/>
+								<div className='flex flex-col space-y-1'>
+									<p>@{comment.user.username}</p>
+									<p className='text-xs line-clamp-2 leading-4'>
+										{comment.content}
+									</p>
+								</div>
+							</div>
+
+							<div className='w-24 h-12 relative'>
+								<Image
+									fill
+									src={comment.video.thumbnail}
+									alt={comment.video.title}
+									className='object-cover rounded-lg'
+								/>
+							</div>
+						</div>
+					))}
+				</div>
+			</div>
+		</>
+	)
+}
+
+export const LatestCommentsSkeleton = () => {
 	return (
 		<div className='p-4 border rounded-xl'>
-			<h3 className='text-lg font-space_grotesk font-semibold'>
-				Latest comments
-			</h3>
-			<p className='text-muted-foreground text-xs'>Channel comments</p>
+			<Skeleton className='w-1/2 h-3' />
+			<Skeleton className='w-1/3 h-3 mt-2' />
 			<Separator className='my-2' />
 
 			<div className='flex flex-col space-y-2'>
-				{/* Map */}
-				<div className='flex items-center justify-between'>
-					<div className='flex items-start gap-x-2 flex-1'>
-						<UserAvatar
-							avatar='https://github.com/shadcn.png'
-							username='samarbadriddin0v'
-						/>
-						<div className='flex flex-col space-y-1'>
-							<div className='flex items-center text-xs gap-x-2'>
-								<p>@samar0811</p>
-								<div className='size-1 rounded-full bg-secondary-foreground' />
-								<p>3 days ago</p>
-							</div>
-							<p className='text-xs line-clamp-2 leading-4'>
-								Lorem ipsum dolor, sit amet consectetur adipisicing elit. Atque
-								numquam placeat dolorem impedit? Unde, numquam in! Perspiciatis
-								aliquam totam doloribus id, quo praesentium. Quam, aliquid quasi
-								dolor adipisci cum eveniet?
-							</p>
-						</div>
-					</div>
+				{Array.from({ length: 5 }).map((_, i) => (
+					<div key={i} className='flex items-center justify-between'>
+						<div className='flex items-start gap-x-2 flex-1'>
+							<Skeleton className='size-8 rounded-full' />
+							<div className='flex flex-col space-y-1'>
+								<Skeleton className='w-20 h-3' />
 
-					<div className='w-24 h-12 relative'>
-						<Image
-							fill
-							src={
-								'https://img.olympics.com/images/image/private/t_social_share_thumb/f_auto/primary/qjxgsf7pqdmyqzsptxju'
-							}
-							alt='alt'
-							className='object-cover rounded-lg'
-						/>
+								<Skeleton className='w-32 h-1' />
+								<Skeleton className='w-32 h-1' />
+								<Skeleton className='w-16 h-1' />
+							</div>
+						</div>
+
+						<Skeleton className='w-24 h-12' />
 					</div>
-				</div>
+				))}
 			</div>
 		</div>
 	)
 }
-
-export default LatestComments

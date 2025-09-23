@@ -16,9 +16,9 @@ const Page = async () => {
 		description: item.description,
 		visibility: item.visibility,
 		createdAt: item.createdAt,
-		views: 100,
-		comments: 20,
-		likes: 50,
+		views: item.views,
+		comments: item._count.comments,
+		likes: item.likes,
 	}))
 
 	return (
