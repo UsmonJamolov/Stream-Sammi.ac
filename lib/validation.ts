@@ -28,8 +28,15 @@ export const videoIdSchema = z.object({
 })
 
 export const commentSchema = z
-	.object({
-		id: z.string(),
-		content: z.string(),
-	})
-	.merge(videoIdSchema)	
+	.object({ id: z.string(), content: z.string() })
+	.merge(videoIdSchema)
+
+export const updateUserSchema = z.object({
+	bio: z.string().optional(),
+	telegram: z.string().optional(),
+	facebook: z.string().optional(),
+	twitter: z.string().optional(),
+	vkontakte: z.string().optional(),
+	banner: z.string().optional(),
+	bannerKey: z.string().optional(),
+})

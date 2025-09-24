@@ -1,11 +1,10 @@
 import { getLatestSubscribers } from '@/actions/dashboard.action'
 import UserAvatar from '@/components/shared/user-avatar'
+import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export const Subscribers = async () => {
+const Subscribers = async () => {
 	const response = await getLatestSubscribers()
-	if (response?.data?.failure) return null
-
 	if (!response?.data?.subscribers) return null
 
 	const subscribers = response?.data?.subscribers
@@ -16,6 +15,15 @@ export const Subscribers = async () => {
 				<h3 className='text-lg font-space_grotesk font-semibold'>
 					Recent subscribers
 				</h3>
+
+				{subscribers.length === 0 && (
+					<>
+						<Separator className='my-2' />
+						<p className='text-muted-foreground text-sm'>
+							No recent subscribers.
+						</p>
+					</>
+				)}
 
 				<div className='space-y-2 mt-4'>
 					{subscribers.map(subscriber => (
@@ -43,6 +51,8 @@ export const Subscribers = async () => {
 		</>
 	)
 }
+
+export default Subscribers
 
 export const SubscribersSkeleton = () => {
 	return (

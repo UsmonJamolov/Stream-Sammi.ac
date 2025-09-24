@@ -51,9 +51,7 @@ export const getVideoById = actionClient
 	})
 
 export const getLatestVideo = actionClient.action(async () => {
-	
 	const { user } = await getAuthorizedUser()
-	if (!user) return { failure: 'Unauthorized' }
 
 	const video = await db.video.findFirst({
 		where: { userId: user.id },
@@ -68,14 +66,13 @@ export const getLatestVideo = actionClient.action(async () => {
 			_count: { select: { comments: true } },
 		},
 	})
-	if (!video) return { failure: 'No video found' }
+	if (!video) return { failure: 'no-video' }
 
 	return { video }
 })
 
 export const getPublishedVideos = actionClient.action(async () => {
 	const { user } = await getAuthorizedUser()
-	if (!user) return { failure: 'Unauthorized' }
 
 	const videos = await db.video.findMany({
 		where: { userId: user.id },
@@ -91,12 +88,12 @@ export const getPublishedVideos = actionClient.action(async () => {
 			_count: { select: { comments: true } },
 		},
 	})
+
 	return { videos }
 })
 
 export const getLatestSubscribers = actionClient.action(async () => {
 	const { user } = await getAuthorizedUser()
-	if (!user) return { failure: 'Unauthorized' }
 
 	const subscribers = await db.follow.findMany({
 		where: { followingId: user.id },
@@ -120,7 +117,6 @@ export const getLatestSubscribers = actionClient.action(async () => {
 
 export const getLatestComments = actionClient.action(async () => {
 	const { user } = await getAuthorizedUser()
-	if (!user) return { failure: 'Unauthorized' }
 
 	const comments = await db.comment.findMany({
 		where: { video: { userId: user.id } },
@@ -136,6 +132,26 @@ export const getLatestComments = actionClient.action(async () => {
 			video: {
 				select: { id: true, title: true, thumbnail: true },
 			},
+		},
+	})
+
+	return { comments }
+})
+
+export const getComments = actionClient.action(async () => {
+	const { user } = await getAuthorizedUser()
+
+	const comments = await db.comment.findMany({
+		where: { video: { userId: user.id } },
+		select: {
+			id: true,
+			content: true,
+			createdAt: true,
+			likes: true,
+			dislikes: true,
+			_count: { select: { replies: true } },
+			user: { select: { username: true, avatar: true } },
+			video: { select: { title: true, thumbnail: true, description: true } },
 		},
 	})
 

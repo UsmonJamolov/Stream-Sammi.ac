@@ -1,14 +1,13 @@
 import { getPublishedVideos } from '@/actions/dashboard.action'
 import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ChartNoAxesColumnIncreasing, Heart, MessageSquare } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 
-export const PublishedVideo = async () => {
+const PublishedVideo = async () => {
 	const response = await getPublishedVideos()
-	if (response?.data?.failure) return notFound()
 
 	if (!response?.data || !response.data.videos) return null
 
@@ -20,6 +19,15 @@ export const PublishedVideo = async () => {
 				<h3 className='text-lg font-space_grotesk font-semibold'>
 					Published videos
 				</h3>
+
+				{videos.length === 0 && (
+					<>
+						<Separator className='my-2' />
+						<p className='text-muted-foreground text-sm'>
+							You have not published any videos yet.
+						</p>
+					</>
+				)}
 
 				<div className='space-y-3 mt-4'>
 					{videos.map(video => (
@@ -73,6 +81,8 @@ export const PublishedVideo = async () => {
 		</>
 	)
 }
+
+export default PublishedVideo
 
 export const PublishedVideoSkeleton = () => {
 	return (

@@ -2,10 +2,13 @@
 
 import { db } from '@/lib/db'
 import { actionClient } from '@/lib/safe-action'
-import { idSchema, usernameSchema } from '@/lib/validation'
+import { idSchema, updateUserSchema, usernameSchema } from '@/lib/validation'
 import { currentUser } from '@clerk/nextjs/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { UTApi } from 'uploadthing/server'
+
+const utapi = new UTApi({})
 
 export const getRecommended = actionClient.action(async () => {
 	const { user } = await getUser()
@@ -128,6 +131,21 @@ export const isFollowingUser = async (otherUserId: string) => {
 	return { isFollowing: existingFollow ? true : false }
 }
 
+export const updateUser = actionClient
+	.schema(updateUserSchema)
+	.action(async ({ parsedInput }) => {
+		const { user } = await getAuthorizedUser()
+		if (!user) return { failure: 'Authorized' }
+
+		await db.user.update({
+			where: { id: user.id },
+			data: parsedInput,
+		})
+
+		revalidatePath('/dashboard/settings')
+		return { message: 'Updated successfully' }
+	})
+
 export const followUser = actionClient
 	.schema(idSchema)
 	.action(async ({ parsedInput }) => {
@@ -183,3 +201,18 @@ export const unfollowUser = actionClient
 
 		return { message: 'Unfollowed successfully' }
 	})
+
+	export const deleteBanner = actionClient.action(async () => {
+	const { user } = await getAuthorizedUser()
+	if (!user) return { failure: 'Authorized' }
+
+	await utapi.deleteFiles(user.bannerKey)
+
+	await db.user.update({
+		where: { id: user.id },
+		data: { banner: '', bannerKey: '' },
+	})
+
+	revalidatePath('/dashboard/settings')
+	return { message: 'Updated successfully' }
+})

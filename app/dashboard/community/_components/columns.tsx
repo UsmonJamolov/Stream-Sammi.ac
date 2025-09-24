@@ -4,13 +4,22 @@ import UserAvatar from '@/components/shared/user-avatar'
 import { Button } from '@/components/ui/button'
 import { ColumnDef } from '@tanstack/react-table'
 import { format, formatDistanceToNow } from 'date-fns'
-import { ArrowUpDown, Calendar } from 'lucide-react'
+import {
+	ArrowUpDown,
+	Calendar,
+	ReplyAll,
+	ThumbsDown,
+	ThumbsUp,
+} from 'lucide-react'
 import Image from 'next/image'
 
 export type DataType = {
 	id: string
 	createdAt: Date
 	content: string
+	likes: number
+	dislikes: number
+	_count: { replies: number }
 	user: { username: string; avatar: string }
 	video: { title: string; thumbnail: string; description: string }
 }
@@ -57,9 +66,41 @@ export const columns: ColumnDef<DataType>[] = [
 		),
 	},
 	{
+		accessorKey: 'likes',
+		header: 'Information',
+		cell: ({ row }) => (
+			<div className='flex gap-x-0'>
+				<Button
+					size={'sm'}
+					variant={'secondary'}
+					className='rounded-r-none rounded-l-full'
+				>
+					<ThumbsUp />
+					<span>{row.original.likes}</span>
+				</Button>
+				<Button
+					size={'sm'}
+					variant={'secondary'}
+					className='rounded-l-none rounded-r-none border-l border-r border-l-secondary-foreground/50 border-r-secondary-foreground/50'
+				>
+					<ThumbsDown />
+					<span>{row.original.dislikes}</span>
+				</Button>
+				<Button
+					size={'sm'}
+					variant={'secondary'}
+					className='rounded-l-none rounded-r-full'
+				>
+					<ReplyAll />
+					<span>{row.original._count.replies}</span>
+				</Button>
+			</div>
+		),
+	},
+	{
 		accessorKey: 'video',
 		header: ({ column }) => (
-			<div className='flex items-center justify-end'>
+			<div className='flex items-center'>
 				<Button
 					variant='ghost'
 					onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
@@ -71,7 +112,7 @@ export const columns: ColumnDef<DataType>[] = [
 			</div>
 		),
 		cell: ({ row }) => (
-			<div className='flex space-x-2 justify-end'>
+			<div className='flex space-x-2 w-full'>
 				<Image
 					width={96}
 					height={48}
@@ -84,9 +125,10 @@ export const columns: ColumnDef<DataType>[] = [
 					<p className='line-clamp-1 font-space_grotesk font-semibold'>
 						{row.original.video.title}
 					</p>
-					<p className='line-clamp-2 text-xs text-muted-foreground'>
-						{row.original.video.description}
-					</p>
+					<div
+						className='line-clamp-2 text-xs text-muted-foreground'
+						dangerouslySetInnerHTML={{ __html: row.original.video.description }}
+					/>
 				</div>
 			</div>
 		),

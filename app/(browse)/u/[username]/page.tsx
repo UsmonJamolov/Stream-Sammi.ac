@@ -6,6 +6,8 @@ import Link from 'next/link'
 import SubscribeBtn from '../../_components/subscribe-btn'
 import {UserContent, UserContentSkeleton } from '../_components/user-content'
 import { Suspense } from 'react'
+import Image from 'next/image'
+import SocialMedia from '../_components/social-media'
 
 interface UsernamePageProps {
 	params: Promise<{ username: string }>
@@ -26,9 +28,24 @@ const UsernamePage = async ({ params }: UsernamePageProps) => {
 	return (
 		<>
 			<div className='w-full h-72 rounded-xl relative bg-secondary flex items-center justify-center'>
-				<h1 className='font-space_grotesk text-2xl capitalize font-bold'>
-					Banner Image
-				</h1>
+				<div className='absolute inset-0 bg-gradient-to-t dark:from-black from-white to-transparent z-40 rounded-xl' />
+				{user.banner && (
+					<Image
+						fill
+						src={user.banner}
+						alt={user.username}
+						className='object-cover rounded-xl'
+					/>
+				)}
+				{!user.banner && (
+					<div className='flex flex-col space-y-1 items-center'>
+						<h2 className='font-space_grotesk text-2xl font-bold'>
+							{user.fullName}
+						</h2>
+						<p className='text-muted-foreground text-sm'>@{user.username}</p>
+					</div>
+				)}
+				<SocialMedia user={user} />
 			</div>
 
 			<div className='w-1/2 mt-4'>

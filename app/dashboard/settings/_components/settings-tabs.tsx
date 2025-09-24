@@ -5,10 +5,15 @@ import { useState } from 'react'
 import Profile from './profile'
 import Performance from './performance'
 import StreamKey from './stream-key'
+import { User } from '@prisma/client'
 
 type TabValue = 'profile' | 'performance' | 'stream'
 
-const SettingsTabs = () => {
+interface Props {
+	user: User
+}
+
+const SettingsTabs = ({ user }: Props) => {
 	const [tabValue, setTabValue] = useState<TabValue>('profile')
 
 	const onToggleTab = (value: TabValue) => setTabValue(value)
@@ -30,7 +35,7 @@ const SettingsTabs = () => {
 
 			<div className='col-span-3'>
 				{tabValue === 'profile' && <Profile />}
-				{tabValue === 'performance' && <Performance />}
+				{tabValue === 'performance' && <Performance user={user} />}
 				{tabValue === 'stream' && <StreamKey />}
 			</div>
 		</div>

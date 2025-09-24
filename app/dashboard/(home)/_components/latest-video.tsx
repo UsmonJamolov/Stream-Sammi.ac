@@ -3,14 +3,15 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { format, formatDistanceToNow } from 'date-fns'
-import { Clock, Eye, Heart, MessageSquare, Video } from 'lucide-react'
+import { Clock, Eye, Heart, MessageSquare, Upload, Video } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 
-export const LatestVideo = async () => {
+const LatestVideo = async () => {
 	const response = await getLatestVideo()
-	if (response?.data?.failure) return notFound()
+	if (response?.data?.failure === 'no-video') {
+		return <NotFound />
+	}
 
 	if (!response?.data || !response.data.video) return null
 
@@ -114,6 +115,8 @@ export const LatestVideo = async () => {
 	)
 }
 
+export default LatestVideo
+
 export const LatestVideoSkeleton = () => {
 	return (
 		<div className='p-4 border rounded-xl'>
@@ -125,34 +128,22 @@ export const LatestVideoSkeleton = () => {
 
 			<div className='space-y-2'>
 				<div className='flex items-center justify-between'>
-					<div className='font-space_grotesk flex items-center gap-x-1'>
-						<Clock className='size-4' />
-						<span>Created at</span>
-					</div>
+					<Skeleton className='w-1/3 h-3' />
 					<Skeleton className='w-1/4 h-3' />
 				</div>
 
 				<div className='flex items-center justify-between'>
-					<div className='font-space_grotesk flex items-center gap-x-1'>
-						<Eye className='size-4' />
-						<span>Views</span>
-					</div>
+					<Skeleton className='w-1/4 h-3' />
 					<Skeleton className='w-1/3 h-3' />
 				</div>
 
 				<div className='flex items-center justify-between'>
-					<div className='font-space_grotesk flex items-center gap-x-1'>
-						<MessageSquare className='size-4' />
-						<span>Messages</span>
-					</div>
+					<Skeleton className='w-1/3 h-3' />
 					<Skeleton className='w-1/4 h-3' />
 				</div>
 
 				<div className='flex items-center justify-between'>
-					<div className='font-space_grotesk flex items-center gap-x-1'>
-						<Heart className='size-4' />
-						<span>Likes</span>
-					</div>
+					<Skeleton className='w-1/4 h-3' />
 					<Skeleton className='w-1/4 h-3' />
 				</div>
 			</div>
@@ -164,3 +155,38 @@ export const LatestVideoSkeleton = () => {
 		</div>
 	)
 }
+
+const NotFound = () => (
+	<div className='p-4 border rounded-xl'>
+		<h3 className='text-lg font-space_grotesk font-semibold'>
+			Latest video performance
+		</h3>
+
+		<div className='w-full relative h-44 mt-4'>
+			<div className='absolute inset-0 z-40 bg-gradient-to-t from-primary rounded-lg' />
+			<div className='flex items-center justify-center w-full h-full font-space_grotesk font-semibold'>
+				No prevent video
+			</div>
+		</div>
+
+		<p className='mt-4 text-sm text-muted-foreground'>
+			You haven&apos;t uploaded a video yet.
+		</p>
+
+		<Separator className='my-2' />
+
+		<div className='space-y-4 flex flex-col mt-4'>
+			<Button
+				size={'lg'}
+				variant={'outline'}
+				asChild
+				className='w-fit rounded-full'
+			>
+				<Link href='/dashboard/videos'>
+					<span>Upload a video</span>
+					<Upload />
+				</Link>
+			</Button>
+		</div>
+	</div>
+)

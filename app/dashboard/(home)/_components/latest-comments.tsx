@@ -6,7 +6,6 @@ import Image from 'next/image'
 
 export const LatestComments = async () => {
 	const response = await getLatestComments()
-	if (response?.data?.failure) return null
 
 	if (!response?.data?.comments) return null
 
@@ -21,6 +20,9 @@ export const LatestComments = async () => {
 				<p className='text-muted-foreground text-xs'>Channel comments</p>
 				<Separator className='my-2' />
 
+				{comments.length === 0 && (
+					<p className='text-muted-foreground text-sm'>No recent comments.</p>
+				)}
 				<div className='flex flex-col space-y-2'>
 					{comments.map(comment => (
 						<div key={comment.id} className='flex items-center justify-between'>

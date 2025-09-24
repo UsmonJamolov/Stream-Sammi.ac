@@ -1,22 +1,14 @@
 import { Separator } from '@/components/ui/separator'
 import { DataTable } from './_components/data-table'
 import { columns } from './_components/columns'
+import { getComments } from '@/actions/dashboard.action'
 
-const Page = () => {
-	const formattedData = [
-		{
-			id: '1',
-			content: 'The Olympics are coming soon, are you ready?',
-			createdAt: new Date('2025-02-01T12:00:00Z'),
-			user: { username: 'samar', avatar: 'https://github.com/shadcn.png' },
-			video: {
-				title: 'The Olympics',
-				thumbnail:
-					'https://img.olympics.com/images/image/private/t_16-9_640/f_auto/v1538355600/primary/owtwv8todbwx68perkjz',
-				description: 'Olympics 2025, in Paris is going to be the best one yet',
-			},
-		},
-	]
+const Page = async () => {
+	const response = await getComments()
+
+	if (!response?.data?.comments) return null
+
+	const comments = response.data.comments
 
 	return (
 		<>
@@ -28,7 +20,7 @@ const Page = () => {
 				</p>
 			</div>
 			<Separator className='my-2' />
-			<DataTable columns={columns} data={formattedData} />
+			<DataTable columns={columns} data={comments} />
 		</>
 	)
 }
