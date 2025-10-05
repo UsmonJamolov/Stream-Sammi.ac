@@ -1,7 +1,16 @@
 import { Separator } from '@/components/ui/separator'
 import SettingsTabs from '../_components/settings-tabs'
+import { getAuthorizedUser } from '@/actions/user.action'
+import { getStream } from '@/actions/dashboard.action'
 
-const Page = () => {
+const Page = async () => {
+	const { user } = await getAuthorizedUser()
+	const response = await getStream()
+
+	if (!response?.data || !response?.data?.stream) return null
+
+	const stream = response?.data?.stream
+	
 	return (
 		<>
 			<h1 className='text-2xl font-bold font-space_grotesk'>Settings</h1>
@@ -11,7 +20,7 @@ const Page = () => {
 
 			<Separator className='my-2' />
 
-			<SettingsTabs />
+			<SettingsTabs user={user} stream={stream} />
 		</>
 	)
 }

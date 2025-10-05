@@ -1,3 +1,5 @@
+'use client'
+
 import { Separator } from '@/components/ui/separator'
 import StreamKeyCard from './stream-key-card'
 import {
@@ -9,8 +11,32 @@ import {
 import { Input } from '@/components/ui/input'
 import { Copy, KeySquare } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useTransition } from 'react'
+import { createIngress } from '@/actions/stream.action'
+import { showToastError } from '@/lib/utils'
+import { toast } from 'sonner'
+import Spinner from '@/components/shared/spinner'
+import { useBoolean } from 'usehooks-ts'
+import { Stream } from '@prisma/client'
 
-const StreamKey = () => {
+interface StreamKeyProps {
+	stream: Stream
+}
+
+const StreamKey = ({ stream }: StreamKeyProps) => {
+	const [isLoading, startTransition] = useTransition()
+	const { value: show, toggle: showToggle } = useBoolean()
+
+	const onGenerateKey = () => {
+		startTransition(async () => {
+			const response = await createIngress()
+			showToastError(response)
+			if (response?.data?.success) {
+				toast.success('Stream key generated successfully')
+			}
+		})
+	}
+
 	return (
 		<div className='bg-sidebar p-4 lg:p-6 rounded-lg'>
 			<h1 className='text-2xl font-space_grotesk font-bold'>
@@ -23,17 +49,17 @@ const StreamKey = () => {
 				<StreamKeyCard
 					field='isFollowersOnly'
 					label='Must be following the channel to write on the chat'
-					value={true}
+					value={stream.isFollowersOnly}
 				/>
 				<StreamKeyCard
 					field='isDelayed'
 					label='Stream is delayed by 30 seconds'
-					value={true}
+					value={stream.isFollowerDelayed}
 				/>
 				<StreamKeyCard
 					field='isChatEnabled'
 					label='Enable chat during the stream'
-					value={true}
+					value={stream.isChatEnabled}
 				/>
 
 				<Accordion type='single' collapsible>
@@ -57,12 +83,22 @@ const StreamKey = () => {
 											<Input
 												className='focus-visible:ring-0 font-space_grotesk'
 												placeholder='Your generated stream key'
+												value={stream.streamKey || ''}
 												disabled
+												type={show ? 'text' : 'password'}
 											/>
-											<Button size={'sm'} variant={'link'}>
-												Show
+											<Button size={'sm'} variant={'link'} onClick={showToggle}>
+												{show ? 'Hide' : 'Show'}
 											</Button>
-											<Button size={'icon'} variant={'ghost'}>
+											<Button
+												size={'icon'}
+												variant={'ghost'}
+												onClick={() =>
+													navigator.clipboard
+														.writeText(stream.streamKey || '')
+														.then(() => toast.success('Copied to clipboard'))
+												}
+											>
 												<Copy className='size-4' />
 											</Button>
 										</div>
@@ -77,17 +113,31 @@ const StreamKey = () => {
 												className='focus-visible:ring-0 font-space_grotesk'
 												placeholder='Your generated stream URL'
 												disabled
+												value={stream.serverUrl || ''}
 											/>
-											<Button size={'icon'} variant={'ghost'}>
+											<Button
+												size={'icon'}
+												variant={'ghost'}
+												onClick={() =>
+													navigator.clipboard
+														.writeText(stream.serverUrl || '')
+														.then(() => toast.success('Copied to clipboard'))
+												}
+											>
 												<Copy className='size-4' />
 											</Button>
 										</div>
 									</div>
 								</div>
 
-								<Button size={'sm'} className='w-fit ml-auto'>
+								<Button
+									size={'sm'}
+									className='w-fit ml-auto'
+									onClick={onGenerateKey}
+									disabled={isLoading}
+								>
 									<span>Generate</span>
-									<KeySquare className='size-4' />
+									{isLoading ? <Spinner /> : <KeySquare className='size-4' />}
 								</Button>
 							</div>
 						</AccordionContent>

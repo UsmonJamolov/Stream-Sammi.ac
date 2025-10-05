@@ -40,3 +40,9 @@ export const updateUserSchema = z.object({
 	banner: z.string().optional(),
 	bannerKey: z.string().optional(),
 })
+
+export const updateStreamSchema = z.object({
+	isFollowersOnly: z.boolean().optional(),
+	isDelayed: z.boolean().optional(),
+	isChatEnabled: z.boolean().optional(),
+})

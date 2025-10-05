@@ -116,6 +116,15 @@ export const getUser = async () => {
 	return { user: foundedUser }
 }
 
+export const getUserById = async (id: string) => {
+	const user = await db.user.findUnique({
+		where: { id },
+		include: { stream: true },
+	})
+
+	return user
+}
+
 export const isFollowingUser = async (otherUserId: string) => {
 	const { user } = await getUser()
 

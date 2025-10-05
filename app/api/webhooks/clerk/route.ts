@@ -21,6 +21,11 @@ export async function POST(req: NextRequest) {
 					avatar: evt.data.image_url,
 					fullName: `${evt.data.first_name} ${evt.data.last_name}`,
 					bio: 'Bio is not provided !!!',
+					stream: {
+						create: {
+							name: `${evt.data.username} Stream`
+						}
+					}
 				},
 			})
 		}

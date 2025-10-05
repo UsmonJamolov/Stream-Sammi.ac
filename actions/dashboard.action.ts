@@ -3,7 +3,11 @@
 import { actionClient } from '@/lib/safe-action'
 import { getAuthorizedUser } from './user.action'
 import { db } from '@/lib/db'
-import { idSchema, updateVideoSchema } from '@/lib/validation'
+import {
+	idSchema,
+	updateStreamSchema,
+	updateVideoSchema,
+} from '@/lib/validation'
 import { revalidatePath } from 'next/cache'
 import { UTApi } from 'uploadthing/server'
 
@@ -158,6 +162,18 @@ export const getComments = actionClient.action(async () => {
 	return { comments }
 })
 
+export const getStream = actionClient.action(async () => {
+	const { user } = await getAuthorizedUser()
+
+	const stream = await db.stream.findUnique({
+		where: { userId: user.id },
+	})
+
+	if (!stream) return { failure: 'Stream not found' }
+
+	return { stream }
+})
+
 export const updateVideo = actionClient
 	.schema(updateVideoSchema)
 	.action(async ({ parsedInput }) => {
@@ -172,6 +188,21 @@ export const updateVideo = actionClient
 
 		revalidatePath('/dashboard/videos')
 		return { success: updatedVideo.id }
+	})
+
+export const updateStream = actionClient
+	.schema(updateStreamSchema)
+	.action(async ({ parsedInput }) => {
+		const { user } = await getAuthorizedUser()
+		if (!user) return { failure: 'Unauthorized' }
+
+		await db.stream.update({
+			where: { userId: user.id },
+			data: parsedInput,
+		})
+
+		revalidatePath('/dashboard/settings')
+		return { success: 'Stream settings updated successfully' }
 	})
 
 export const deleteVideoById = actionClient
