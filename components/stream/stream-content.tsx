@@ -26,8 +26,8 @@ const StreamContent = ({ stream, user }: StreamContentProps) => {
 				<div className='col-span-3 space-y-4'>
 					<Player hostName={user.username} hostId={user.id} />
 				</div>
-				<div className='col-span-1'>
-					<Chat />
+				<div className='col-span-1 rounded-lg bg-gradient-to-b from-background to-secondary rounded-b-none'>
+					<Chat hostId={user.id} stream={stream} />
 				</div>
 			</LiveKitRoom>
 		</>
