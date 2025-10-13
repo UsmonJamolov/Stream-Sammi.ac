@@ -5,7 +5,7 @@ import {
 } from '@livekit/components-react'
 import { Stream } from '@prisma/client'
 import { ConnectionState } from 'livekit-client'
-import { useState } from 'react'
+import {useEffect, useRef,useState } from 'react'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { Send } from 'lucide-react'
@@ -15,10 +15,15 @@ import FormInfo from './form-info'
 interface ChatProps {
 	hostId: string
 	stream: Stream
+	isFollowing: boolean
 }
 
-const Chat = ({ hostId, stream }: ChatProps) => {
+const Chat = ({ hostId, stream, isFollowing }: ChatProps) => {
 	const [value, setValue] = useState<string>('')
+	const [isDelayBlocked, setIsDelayBlocked] = useState(false)
+	const [countDown, setCountDown] = useState(0)
+
+	const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
 	const connectionState = useConnectionState()
 	const participant = useRemoteParticipant(hostId)
@@ -26,6 +31,8 @@ const Chat = ({ hostId, stream }: ChatProps) => {
 
 	const isOnline = participant && connectionState === ConnectionState.Connected
 	const isHidden = !isOnline && !stream.isChatEnabled
+	const isFollowersOnly = stream.isFollowersOnly && !isFollowing
+	const isDisabled = isHidden || isDelayBlocked || isFollowersOnly
 
 	const sendMessage = (value: string) => {
 		if (!send) return
@@ -38,10 +45,36 @@ const Chat = ({ hostId, stream }: ChatProps) => {
 		e.preventDefault()
 		e.stopPropagation()
 
-		if (!value) return
+		if (!value || isDisabled) return
 
-		sendMessage(value)
-	}
+		if (stream.isDelayed && !isDelayBlocked) {
+			setIsDelayBlocked(true)
+			setCountDown(5)
+			const interval = setInterval(() => {
+				setCountDown(prev => {
+					if (prev <= 1) {
+						clearInterval(interval)
+						return 0
+					}
+					return prev - 1
+				})
+			}, 1000)
+	
+			timeoutRef.current = setTimeout(() => {
+				sendMessage(value)
+				setIsDelayBlocked(false)
+			}, 5000)
+		} else {
+			sendMessage(value)
+		}
+		
+	} 
+
+	useEffect(() => {
+		return () => {
+			if (timeoutRef.current) clearInterval(timeoutRef.current)
+		}
+	}, [])
 
 	return (
 		<div className='h-full relative'>
@@ -50,8 +83,8 @@ const Chat = ({ hostId, stream }: ChatProps) => {
 			</div>
 
 			<div className='h-full flex flex-col'>
-				<div className='h-96 flex flex-col-reverse overflow-y-auto'>
-					{isHidden || !chatMessages.length || !chatMessages ? (
+				<div className='h-96 flex flex-col-reverse overflow-y-auto pb-4'>
+					{isHidden || !chatMessages.length || !chatMessages || !isOnline ? (
 						<div className='flex-1 flex items-center justify-center'>
 							<p className='text-center text-muted-foreground text-xs'>
 								{isHidden ? 'Chat is disabled' : 'No messages yet'}
@@ -77,10 +110,16 @@ const Chat = ({ hostId, stream }: ChatProps) => {
 									placeholder='Send a message'
 									value={value}
 									onChange={e => setValue(e.target.value)}
+									disabled={isDisabled}
 								/>
 							</div>
-							<Button size={'sm'} type='submit' className='rounded-none'>
-								<Send />
+							<Button 
+							size={'sm'} 
+							type='submit' 
+							className='rounded-none'
+							disabled={isDisabled}
+							>
+								{isDelayBlocked ? countDown : <Send />}
 							</Button>
 						</form>
 					</div>

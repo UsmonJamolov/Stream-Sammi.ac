@@ -196,6 +196,16 @@ export const updateStream = actionClient
 		const { user } = await getAuthorizedUser()
 		if (!user) return { failure: 'Unauthorized' }
 
+		if (parsedInput.thumbnailKey) {
+			const stream = await db.stream.findUnique({
+				where: { userId: user.id },
+				select: { thumbnailKey: true },
+			})
+			if (stream?.thumbnailKey) {
+				utapi.deleteFiles(stream.thumbnailKey)
+			}
+		}
+		
 		await db.stream.update({
 			where: { userId: user.id },
 			data: parsedInput,

@@ -45,4 +45,10 @@ export const updateStreamSchema = z.object({
 	isFollowersOnly: z.boolean().optional(),
 	isDelayed: z.boolean().optional(),
 	isChatEnabled: z.boolean().optional(),
+	name: z.string().optional(),
+	description: z.string().optional(),
+	category: z.string().optional(),
+	visibility: z.string().optional(),
+	thumbnail: z.string().optional(),
+	thumbnailKey: z.string().optional(),
 })

@@ -79,6 +79,7 @@ const VideoDetail = ({ video }: VideoDetailProps) => {
 							onClientUploadComplete={res =>
 								onUpdate(res[0].ufsUrl, video.visibility, video.category)
 							}
+							className='uploadthing-button'
 							disabled={isLoading}
 						/>
 					</DialogContent>
@@ -139,6 +140,7 @@ const VideoDetail = ({ video }: VideoDetailProps) => {
 					<SelectContent>
 						<SelectItem value='Public'>Public</SelectItem>
 						<SelectItem value='Private'>Private</SelectItem>
+						<SelectItem value='Unlisted'>Unlisted</SelectItem>
 					</SelectContent>
 				</Select>
 			</div>

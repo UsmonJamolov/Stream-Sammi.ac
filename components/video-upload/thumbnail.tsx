@@ -26,6 +26,7 @@ const Thumbnail = () => {
 			onClientUploadComplete={res => updateThumbnail(res[0].ufsUrl, res[0].key)}
 			uploadProgressGranularity='all'
 			config={{ mode: 'auto', appendOnPaste: true }}
+			className='uploadthing-button'
 		/>
 	)
 }

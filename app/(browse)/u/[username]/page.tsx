@@ -101,7 +101,7 @@ const UsernamePage = async ({ params }: UsernamePageProps) => {
 								<div className='mt-4'>
 									<SubscribeBtn
 										isFollowing={isFollowing}
-										otherUserId={user.id}
+										otherUserId='dwa'
 									/>
 								</div>
 							</div>

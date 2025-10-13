@@ -37,6 +37,7 @@ const Dropzone = () => {
 			}}
 			uploadProgressGranularity='all'
 			config={{ mode: 'auto', appendOnPaste: true }}
+			className='uploadthing-button'
 		/>
 	)
 }

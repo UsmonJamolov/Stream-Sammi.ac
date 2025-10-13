@@ -53,7 +53,7 @@ const StreamKey = ({ stream }: StreamKeyProps) => {
 				/>
 				<StreamKeyCard
 					field='isDelayed'
-					label='Stream is delayed by 30 seconds'
+					label='Stream is delayed by 5 seconds'
 					value={stream.isFollowerDelayed}
 				/>
 				<StreamKeyCard

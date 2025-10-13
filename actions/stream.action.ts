@@ -20,6 +20,23 @@ const roomService = new RoomServiceClient(
 
 const ingressClient = new IngressClient(process.env.LIVEKIT_API_URL!)
 
+export const getStreams = actionClient.action(async () => {
+	const streams = await db.stream.findMany({
+		select: {
+			user: true,
+			isLive: true,
+			name: true,
+			thumbnail: true,
+			id: true,
+			description: true,
+			updatedAt: true,
+		},
+		orderBy: [{ isLive: 'desc' }, { updatedAt: 'desc' }],
+	})
+
+	return { streams }
+})
+
 export const resetIngress = actionClient
 	.schema(idSchema)
 	.action(async ({ parsedInput }) => {

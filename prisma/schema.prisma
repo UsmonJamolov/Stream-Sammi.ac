@@ -44,6 +44,10 @@ model Stream {
   name         String @db.Text
   thumbnail    String @default("") @db.Text
   thumbnailKey String @default("") @db.Text
+  description  String @default("") @db.Text
+
+  category   String @default("General") @db.Text
+  visibility String @default("Private") @db.Text
 
   ingressId String? @unique
   serverUrl String? @db.Text
