@@ -1,42 +1,48 @@
-// import { getHomeFeed } from '@/actions/feed.action'
-// import { getFollowing } from '@/actions/user.action'
-// import UserAvatar from '@/components/shared/user-avatar'
+import {getUserSubscriptionsContent} from '@/actions/user.action'
+import UserAvatar from '@/components/shared/user-avatar'
 import { Separator } from '@/components/ui/separator'
-// import { formatDistanceToNow } from 'date-fns'
-// import Image from 'next/image'
-// import Link from 'next/link'
+import { formatDistanceToNow } from 'date-fns'
+import Image from 'next/image'
+import Link from 'next/link'
 
 const SubscriptionsPage = async () => {
-	// const responseFeed = await getHomeFeed()
-	// const responseUser = await getFollowing()
+	const response = await getUserSubscriptionsContent()
 
-	// const feeds = responseFeed?.data?.feed || []
-	// const subscriptions = responseUser?.data?.following || []
+	const subscriptions = response?.data?.subscriptions || []
+	const totalVideos = response?.data?.totalVideos || 0
+
+	if (subscriptions.length === 0) {
+		return (
+			<h1 className="text-2xl font-space_grotesk font-bold mb-2">
+				No subsriptions found
+			</h1>
+		)
+	}
 
 	return (
 		<>
 			<h1 className='text-2xl font-space_grotesk font-bold mb-2'>Users</h1>
 			<div className='w-full overflow-x-scroll flex items-center space-x-4 custom-scrollbar'>
-				{/* {subscriptions.map(subscription => (
+				{subscriptions.map(subscription => (
 					<Link key={subscription.id} href={`/u/${subscription.username}`}>
 						<UserAvatar
-							username={subscription.username}
-							avatar={subscription.avatar}
+							username={subscription.following.username}
+							avatar={subscription.following.avatar}
 							size={'2xl'}
 							variant={'square'}
 						/>
 						<p className='text-center font-space_grotesk font-bold capitalize'>
-							{subscription.username}
+							{subscription.following.username}
 						</p>
 					</Link>
-				))} */}
+				))}
 			</div>
 			<Separator className='my-3' />
-			{/* <h1 className='text-2xl font-space_grotesk font-bold mb-2'>
-				{feeds.length > 0 ? 'Videos' : 'No videos found'}
-			</h1> */}
+			<h1 className='text-2xl font-space_grotesk font-bold mb-2'>
+				{totalVideos > 0 ? 'Videos' : 'No videos found'}
+			</h1>
 			<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4'>
-				{/* {feeds.map(feed => (
+				{feeds.map(feed => (
 					<Link key={feed.id} href={`/v/${feed.id}`}>
 						<div>
 							<div className='h-56 rounded-lg relative'>
@@ -62,14 +68,14 @@ const SubscriptionsPage = async () => {
 										<p>@{feed.user.username}</p>
 										<div className='size-1 rounded-full bg-muted-foreground' />
 										<p>
-											{formatDistanceToNow(feed.createdAt, { addSuffix: true })}
+											{formatDistanceToNow(video.createdAt, { addSuffix: true })}
 										</p>
 									</div>
 								</div>
 							</div>
 						</div>
 					</Link>
-				))} */}
+				))}
 			</div>
 		</>
 	)

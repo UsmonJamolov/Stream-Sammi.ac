@@ -1,7 +1,3 @@
-// import { getFollowing } from '@/actions/user.action'
-// import UserAvatar from '@/components/shared/user-avatar'
-// import Link from 'next/link'
-
 import { getStreams } from '@/actions/stream.action'
 import UserAvatar from '@/components/shared/user-avatar'
 import { Badge } from '@/components/ui/badge'
@@ -17,7 +13,7 @@ const LivesPage = async () => {
 	return (
 		<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4'>
 			{lives.map(live => (
-				<Link href={`/s/${live.id}`} key={live.id}>
+				<Link href={`/s/${live.user.username}`} key={live.id}>
 					<div className='w-full'>
 						{live.thumbnail && (
 							<div className='w-full flex flex-col space-y-2'>

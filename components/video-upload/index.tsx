@@ -26,7 +26,7 @@ const UploadVideo = ({ isGlobal = false }: UploadVideoProps) => {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<div>
+				<div className='lg:flex hidden'>
 					{isGlobal && (
 						<Button size={'sm'} variant={'ghost'}>
 							<span>Create</span>

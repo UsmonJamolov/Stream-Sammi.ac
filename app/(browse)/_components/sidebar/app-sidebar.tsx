@@ -42,7 +42,7 @@ const AppSidebar = async () => {
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
 									<SidebarMenuButton>
-										<User2 /> @samar0811
+										<User2 /> @{user.username}
 										<ChevronUp className='ml-auto' />
 									</SidebarMenuButton>
 								</DropdownMenuTrigger>

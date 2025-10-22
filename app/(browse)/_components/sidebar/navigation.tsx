@@ -7,6 +7,7 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	useSidebar
 } from '@/components/ui/sidebar'
 import { Clapperboard, Home, Layers2, TvMinimalPlay } from 'lucide-react'
 import Link from 'next/link'
@@ -14,6 +15,7 @@ import { usePathname } from 'next/navigation'
 
 const Navigation = () => {
 	const pathname = usePathname()
+	const {setOpenMobile} = useSidebar()
 
 	return (
 		<SidebarGroup>
@@ -23,7 +25,7 @@ const Navigation = () => {
 					{navigation_items.map(item => (
 						<SidebarMenuItem key={item.route}>
 							<SidebarMenuButton asChild isActive={pathname === item.route}>
-								<Link href={item.route}>
+								<Link href={item.route} onClick={() => setOpenMobile(false)}>
 									<item.icon />
 									<span>{item.title}</span>
 								</Link>

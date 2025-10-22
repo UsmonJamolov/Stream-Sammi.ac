@@ -65,6 +65,7 @@ export const RecommendedVideos = async ({ videoId }: RecommendedVideosProps) => 
 export const RecommendedVideosSkeleton = () => {
 	return (
 		<>
+		<div className="space-y-4">
 			<h2 className='font-space_grotesk text-2xl'>Recommended</h2>
 
 			{Array.from({ length: 3 }).map((_, index) => (
@@ -84,6 +85,8 @@ export const RecommendedVideosSkeleton = () => {
 					</div>
 				</div>
 			))}
+		</div>
+
 		</>
 	)
 }

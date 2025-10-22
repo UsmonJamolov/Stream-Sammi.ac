@@ -13,7 +13,12 @@ const Page = async () => {
 	const stream = streamRes.data.stream
 	const {isFollowing} = await isFollowingUser(user.id)
 
-	return <StreamContent user={user} stream={stream} isFollowing={isFollowing}  />
+	return <StreamContent 
+	user={user} 
+	stream={stream} 
+	isFollowing={isFollowing}  
+	isDashboard
+	/>
 
 }
 

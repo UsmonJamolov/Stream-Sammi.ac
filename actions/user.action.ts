@@ -88,7 +88,20 @@ export const getUserContent = actionClient
 			},
 		})
 
-		return { videos }
+		const stream = await db.stream.findUnique({
+			where: { userId: id },
+			select: {
+				id: true,
+				thumbnail: true,
+				updatedAt: true,
+				description: true,
+				name: true,
+				isLive: true,
+				user: { select: { username: true, id: true, avatar: true } },
+			},
+		})
+
+		return { videos, stream }
 	})
 
 export const getAuthorizedUser = async () => {
@@ -124,6 +137,42 @@ export const getUserById = async (id: string) => {
 
 	return user
 }
+
+export const getUserSubscritionsContent = actionClient.action(async () => {
+	const { user } = await getUser()
+	if (!user) return { subscriptions: [] }
+
+	const subscriptions = await db.follow.findMany({
+		where: { followerId: user.id },
+		select: {
+			id: true,
+			following: {
+				select: {
+					username: true,
+					avatar: true,
+					videos: {
+						select: {
+							id: true,
+							title: true,
+							thumbnail: true,
+							views: true,
+							createdAt: true,
+							user: { select: { username: true, avatar: true } },
+						},
+					},
+					_count: { select: { videos: true } },
+				},
+			},
+		},
+	})
+
+	const totalVideos = subscriptions.reduce(
+		(acc, sub) => acc + sub.following._count.videos,
+		0
+	)
+
+	return { subscriptions, totalVideos }
+})
 
 export const isFollowingUser = async (otherUserId: string) => {
 	const { user } = await getUser()

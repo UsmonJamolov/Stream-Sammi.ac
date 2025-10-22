@@ -1,4 +1,5 @@
-import { getHomeFeed } from '@/actions/feed.action'
+import { getUser, getUserContent } from '@/actions/user.action'
+import UserAvatar from '@/components/shared/user-avatar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -8,14 +9,21 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 export const UserContent = async () => {
-	const response = await getHomeFeed()
+	const response = await getUserContent({id: userId})
+	const {user} = await getUser()
 
-	const feeds = response?.data?.feed || []
+	const videos = response?.data?.videos || []
+	const stream = response?.data?.stream
+
+	if (!stream) {
+		return null
+	}
 
 	return (
 		<div className='mb-8'>
-			<div className='flex gap-x-4 mt-6 w-2/3 items-start'>
-				<div className='w-72 h-44 rounded-xl relative'>
+			<div className='flex gap-x-4 mt-6 lg:w-2/3 w-full items-start'>
+			{stream.length && (
+				<div className='lg:w-72 w-40 lg:h-44 h-20 rounded-xl relative'>
 					<Image
 						src={
 							'https://fakeimg.deblan.org/600x400/000/fff.jpg&text=thumbnail'
@@ -25,35 +33,58 @@ export const UserContent = async () => {
 						className='rounded-xl object-cover'
 					/>
 				</div>
+			)}
+
+			{!stream.thumbnail && (
+				<div className="lg:w-72 w-52 lg:h-44 h-36 flex items-center justify-center bg-secondary rounded-lg flex-col relative">
+					<div className="absolute inset-0 bg-gradint-to-t dark: from-black from-white to-transparet z-40 rounded-lg">
+						<UserAvatar 
+						username={stream.user.username}
+						avatar={stream.user.avatar}
+						isLive={stream.isLive}
+						showBage
+						size={'lg'}
+						/>
+						<h1 className="font-space_grotesk lg:text-lg text-md mt-4 text-center">
+							<span className="capitalize">
+								{stream.user.username} is live
+							</span>
+						</h1>
+						<div className="line-clamp-2 text-sm text-center text-muted-foreground leading-4" dangerouslySetInnerHTML={{__html: stream.description}}></div>
+					</div>
+				</div>
+			)}
 
 				<div className='flex flex-1 space-y-1 flex-col'>
 					<h1 className='text-2xl font-space_grotesk font-bold'>
-						Samar&apos;s stream
+						{stream.name}
 					</h1>
-					<p className='line-clamp-3 text-muted-foreground leading-5 text-sm'>
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. In mollitia
-						fuga est. Numquam optio, est maiores iste dolorum dignissimos magni
-						officiis nesciunt animi veniam perspiciatis quibusdam tenetur dicta
-						voluptatem eos.
-					</p>
-					<div className='flex items-center gap-x-1'>
-						{/* <>
-							<Settings2 className='size-4' />
-							<span>User has not configured streaming yet.</span>
-						</> */}
-						<>
+					<div
+						className='line-clamp-3 text-muted-foreground leading-5 text-sm'
+						dangerouslySetInnerHTML={{ __html: stream.description }}
+					/>
+					<div className='flex items-center gap-x-1 max-lg:text-sm text-muted-foreground'>
+						
 							<Calendar className='size-4' />
-							<span>Streamed 2 days ago</span>
-						</>
+						<span>
+							Streamed{' '}
+							{formatDistanceToNow(stream.updatedAt, { addSuffix: true })}
+						</span>
 					</div>
-					<Button
-						asChild
-						className='w-fit rounded-full'
-						variant={'outline'}
-						size={'lg'}
-					>
-						<Link href={'/s/samar0811'}>Watch stream</Link>
-					</Button>
+					<div className='flex items-center gap-x-2'>
+						<Button asChild className='w-fit rounded-full' variant={'outline'}>
+							<Link href={`/s/${stream.user.username}`}>Watch stream</Link>
+						</Button>
+						{stream.user.id === user?.id && (
+							<Button
+								asChild
+								className='w-fit rounded-full'
+								variant={'secondary'}
+							>
+								<Link href={`/dashboard/stream`}>Settings</Link>
+							</Button>
+						)}
+					</div>
 				</div>
 			</div>
 

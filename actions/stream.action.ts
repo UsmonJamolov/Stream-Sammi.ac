@@ -37,6 +37,81 @@ export const getStreams = actionClient.action(async () => {
 	return { streams }
 })
 
+export const getStream = actionClient
+	.schema(idSchema)
+	.action(async ({ parsedInput }) => {
+		const { id: username } = parsedInput
+
+		const user = await db.user.findUnique({
+			where: { username },
+			select: { id: true },
+		})
+		if (!user) return { failure: 'User not found' }
+
+		const stream = await db.stream.findUnique({
+			where: { userId: user.id },
+			select: {
+				id: true,
+				isLive: true,
+				name: true,
+				description: true,
+				thumbnail: true,
+				updatedAt: true,
+				user: {
+					select: {
+						avatar: true,
+						id: true,
+						username: true,
+						fullName: true,
+						_count: { select: { followedBy: true } },
+					},
+				},
+			},
+		})
+		if (!stream) return { failure: 'Stream not found' }
+
+		return { stream }
+	})
+
+export const getStream = actionClient
+	.schema(idSchema)
+	.action(async ({ parsedInput }) => {
+		const { id: username } = parsedInput
+
+		const user = await db.user.findUnique({
+			where: { username },
+			select: { id: true },
+		})
+		if (!user) return { failure: 'User not found' }
+
+		const stream = await db.stream.findUnique({
+			where: { userId: user.id },
+			select: {
+				id: true,
+				isLive: true,
+				name: true,
+				description: true,
+				thumbnail: true,
+				updatedAt: true,
+				isChatEnabled: true,
+				isDelayed: true,
+				isFollowersOnly: true,
+				user: {
+					select: {
+						avatar: true,
+						id: true,
+						username: true,
+						fullName: true,
+						_count: { select: { followedBy: true } },
+					},
+				},
+			},
+		})
+		if (!stream) return { failure: 'Stream not found' }
+
+		return { stream }
+	})
+
 export const resetIngress = actionClient
 	.schema(idSchema)
 	.action(async ({ parsedInput }) => {

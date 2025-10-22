@@ -27,7 +27,7 @@ const UsernamePage = async ({ params }: UsernamePageProps) => {
 
 	return (
 		<>
-			<div className='w-full h-72 rounded-xl relative bg-secondary flex items-center justify-center'>
+			<div className='w-full lg:h-72 h-52 rounded-xl relative bg-secondary flex items-center justify-center'>
 				<div className='absolute inset-0 bg-gradient-to-t dark:from-black from-white to-transparent z-40 rounded-xl' />
 				{user.banner && (
 					<Image
@@ -48,7 +48,7 @@ const UsernamePage = async ({ params }: UsernamePageProps) => {
 				<SocialMedia user={user} />
 			</div>
 
-			<div className='w-1/2 mt-4'>
+			<div className='lg:w-1/2 w-full mt-4'>
 				<div className='flex items-start space-x-4'>
 					<UserAvatar
 						username={user.username}
@@ -61,7 +61,7 @@ const UsernamePage = async ({ params }: UsernamePageProps) => {
 							{user.fullName || 'No name provided'}
 						</h2>
 
-						<div className='flex items-center gap-x-2'>
+						<div className='flex items-center gap-x-2 flex-wrap'>
 							<p>@{user.username}</p>
 							<div className='size-1 rounded-full bg-muted-foreground' />
 							<p className='text-muted-foreground'>

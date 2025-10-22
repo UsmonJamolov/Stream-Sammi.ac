@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
 					}
 				},
 			})
+			return new Response('User created', {status: 200})
 		}
 
 		if (eventType === 'user.updated') {
@@ -39,12 +40,14 @@ export async function POST(req: NextRequest) {
 					fullName: `${evt.data.first_name} ${evt.data.last_name}`,
 				},
 			})
+			return new Response('User updated', {status: 200})
 		}
 
 		if (eventType === 'user.deleted') {
 			await db.user.delete({
 				where: { clerkId: evt.data.id },
 			})
+			return new Response('User deleted', {status: 200})
 		}
 
 		return new Response('Webhook received', { status: 200 })

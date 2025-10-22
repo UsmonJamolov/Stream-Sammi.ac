@@ -17,37 +17,38 @@ const UserInformation = async ({ video }: UserInformationProps) => {
 	const { isFollowing } = await isFollowingUser(video.user.id)
 
 	return (
-		<div className='flex items-center gap-x-2'>
-			<UserAvatar
-				avatar={video.user.avatar}
-				username={video.user.username}
-				size={'lg'}
-			/>
+		<div className="w-full flex items-center gap-x-2 max-lg:justify-between">
+			<div className='flex items-center gap-x-2'>
+				<UserAvatar
+					avatar={video.user.avatar}
+					username={video.user.username}
+					size={'lg'}
+				/>
 
-			<div className='flex flex-col space-y-0'>
-				<div className='flex itemsce gap-x-1'>
-					<h2 className='font-bold text-lg font-space_grotesk'>
-						{video.user.fullName}
-					</h2>
-					<Button
-						variant={'ghost'}
-						size={'icon'}
-						className='rounded-full size-7'
-					>
-						<BadgeCheck className='text-blue-500' />
-					</Button>
+				<div className='flex flex-col space-y-0'>
+					<div className='flex itemsce gap-x-1'>
+						<h2 className='font-bold text-lg font-space_grotesk'>
+							{video.user.fullName}
+						</h2>
+						<Button
+							variant={'ghost'}
+							size={'icon'}
+							className='rounded-full size-7'
+						>
+							<BadgeCheck className='text-blue-500' />
+						</Button>
+					</div>
 				</div>
-				<p className='text-sm text-muted-foreground'>
-					{video.user._count.followedBy} subscribers
-				</p>
+				<div>
+					{video.user.id === user?.id ? (
+						<Button asChild size={'lg'} className='rounded-full'>
+							<Link href={`/u/${user.username}`}>Edit</Link>
+						</Button>
+					) : (
+						<SubscribeBtn isFollowing={isFollowing} otherUserId={video.user.id} />
+					)}
+				</div>
 			</div>
-			{video.user.id === user?.id ? (
-				<Button asChild size={'lg'} className='rounded-full'>
-					<Link href={`/u/${user.username}`}>Edit</Link>
-				</Button>
-			) : (
-				<SubscribeBtn isFollowing={isFollowing} otherUserId={video.user.id} />
-			)}
 		</div>
 	)
 }

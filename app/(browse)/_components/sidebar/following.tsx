@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
+import NavigationCard from './navigation.card'
 
 export const Following = async () => {
 	const data = await getFollowing()
@@ -34,27 +35,7 @@ export const Following = async () => {
 							</SidebarMenuItem>
 						)}
 						{following.map(item => (
-							<SidebarMenuItem key={item.id}>
-								<SidebarMenuButton asChild size={'lg'}>
-									<Link href={`/u/${item.following.username}`}>
-										<UserAvatar
-											avatar={item.following.avatar}
-											username={item.following.username}
-											variant={'square'}
-										/>
-
-										<div className='flex flex-col'>
-											<p className='text-sm font-space_grotesk'>
-												@{item.following.username}
-											</p>
-											<p className='text-xs text-muted-foreground'>
-												{item.following._count.followedBy} follower
-												{item.following._count.followedBy !== 1 && 's'}
-											</p>
-										</div>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
+							<NavigationCard key={item.id} item={item.following} />
 						))}
 					</SidebarMenu>
 				</SidebarContent>

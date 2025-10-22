@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
+import NavigationCard from './navigation.card'
 
 export const Recommended = async () => {
 	const data = await getRecommended()
@@ -27,26 +28,7 @@ export const Recommended = async () => {
 				<SidebarContent>
 					<SidebarMenu>
 						{recommended.map(item => (
-							<SidebarMenuItem key={item.id}>
-								<SidebarMenuButton asChild size={'lg'}>
-									<Link href={`/u/${item.username}`}>
-										<UserAvatar
-											avatar={item.avatar}
-											username={item.username}
-											variant={'square'}
-										/>
-										<div className='flex flex-col'>
-											<p className='text-sm font-space_grotesk'>
-												@{item.username}
-											</p>
-											<p className='text-xs text-muted-foreground'>
-												{item._count.followedBy} follower
-												{item._count.followedBy !== 1 && 's'}
-											</p>
-										</div>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
+							<NavigationCard key={item.id} item={item} />
 						))}
 					</SidebarMenu>
 				</SidebarContent>

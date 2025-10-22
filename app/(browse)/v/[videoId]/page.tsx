@@ -29,13 +29,13 @@ const VideoPage = async ({ params }: VideoPageProps) => {
 	return (
 		<>
 			<div className='grid grid-cols-4 gap-x-4 mt-4'>
-				<div className='col-span-3'>
+				<div className='lg:col-span-3 col-span-4'>
 					<VideoPlayer videoUrl={video.videoUrl} />
 					<h1 className='text-2xl font-bold mt-4 font-space_grotesk'>
 						{video.title}
 					</h1>
 
-					<div className='flex items-center justify-between mt-3'>
+					<div className='flex items-center justify-between mt-3 max-lg:flex-col max-lg:items-start max-lg:space-y-4'>
 						<UserInformation video={JSON.parse(JSON.stringify(video))} />
 
 						<VideoActions
@@ -53,8 +53,14 @@ const VideoPage = async ({ params }: VideoPageProps) => {
 					<Suspense fallback={<CommentsSkeleton />}>
 						<Comments videoId={video.id} />
 					</Suspense>
+
+					<div className="block lg:hidden">
+						<Suspense fallback={<RecommendedVideosSkeleton />}>
+							<RecommendedVideos videoId={video.id} />
+						</Suspense>
+					</div>
 				</div>
-				<div className='col-span-1'>
+				<div className='hidden lg:flex col-span-1'>
 					<Suspense fallback={<RecommendedVideosSkeleton />}>
 						<RecommendedVideos videoId={video.id} />
 					</Suspense>

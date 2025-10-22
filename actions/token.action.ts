@@ -29,8 +29,8 @@ export const createViewerToken = actionClient
 			throw new Error('Host not found')
 		}
 
-		const isHost = host.id === generatedUser.id // Biz hostmi yoki emasligimizni aniqlash
-
+		const isHost = host.id === generatedUser.id
+		
 		const at = new AccessToken(
 			process.env.LIVEKIT_API_KEY,
 			process.env.LIVEKIT_API_SECRET,

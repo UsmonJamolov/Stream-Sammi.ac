@@ -77,14 +77,14 @@ const Chat = ({ hostId, stream, isFollowing }: ChatProps) => {
 	}, [])
 
 	return (
-		<div className='h-full relative'>
+		<div className='h-full relative max-lg:mt-4'>
 			<div className='border-b text-center pb-2 font-semibold font-space_grotesk text-lg'>
 				Stream chat
 			</div>
 
 			<div className='h-full flex flex-col'>
-				<div className='h-96 flex flex-col-reverse overflow-y-auto pb-4'>
-					{isHidden || !chatMessages.length || !chatMessages || !isOnline ? (
+				<div className='lg:h-96 h-52 flex flex-col-reverse overflow-y-auto pb-14'>
+					{isHidden || !chatMessages.length || !Boolean(isOnline) ? (
 						<div className='flex-1 flex items-center justify-center'>
 							<p className='text-center text-muted-foreground text-xs'>
 								{isHidden ? 'Chat is disabled' : 'No messages yet'}

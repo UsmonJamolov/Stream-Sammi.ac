@@ -1,21 +1,35 @@
-const StreamPage = () => {
+import { getStream } from '@/actions/stream.action'
+import { getUserByUsername, isFollowingUser } from '@/actions/user.action'
+import StreamContent from '@/components/stream/stream-content'
+import { notFound } from 'next/navigation'
+
+interface Props {
+	params: Promise<{ username: string }>
+}
+
+const StreamPage = async ({ params }: Props) => {
+	const { username } = await params
+	const streamResponse = await getStream({id: username})
+	const userResponse = await getUserByUsername({username})
+
+	if (streamResponse?.data?.failure) return notFound()
+
+	const stream = streamResponse?.data?.stream
+	if (!stream) return notFound()
+
+	const user  = userResponse?.data.user
+	if (user) return notFound()
+	
+	const { isFollowing } = await isFollowingUser(`${user?.id}`)
+	
 	return (
 		<>
-			<div className='grid grid-cols-4 gap-x-4 mt-4'>
-				<div className='col-span-3'>
-					<div className='aspect-video bg-secondary rounded-md' />
-					<h1 className='text-2xl font-bold mt-4 font-space_grotesk'>
-						How to build a website with Next.js and Tailwind CSS - Full Course
-					</h1>
-
-					<div className='flex items-center justify-between mt-3'>
-						{/* <UserInformation /> */}
-					</div>
-				</div>
-				<div className='col-span-1'>
-					<div className='bg-secondary p-4 rounded-md'></div>
-				</div>
-			</div>
+			<StreamContent
+				stream={JSON.parse(JSON.stringify(stream))}
+				user={user}
+				isFollowing={isFollowing}
+				isDashboard={false}
+			/>
 		</>
 	)
 }
